@@ -38,6 +38,7 @@ void YApplication::initSignals() {
     fcntl(signalPipe[0], F_SETFD, FD_CLOEXEC);
 #else
     sigemptyset(&signalMask);
+    sigaddset(&signalMask, SIGPIPE);
     sigprocmask(SIG_BLOCK, &signalMask, &oldSignalMask);
 
     if (pipe(signalPipe) != 0)
@@ -465,8 +466,11 @@ const upath& YApplication::getPrivConfDir() {
     static upath dir;
     if (dir.isEmpty()) {
         const char *env = getenv("ICEWM_PRIVCFG");
-        if (env)
+        if (env) {
             dir = env;
+            if ( ! dir.dirExists())
+                dir.mkdir();
+        }
         else {
             env = getenv("XDG_CONFIG_HOME");
             if (env)
@@ -476,7 +480,9 @@ const upath& YApplication::getPrivConfDir() {
             }
             dir += "/icewm";
             if (!dir.dirExists()) {
-                    dir = getHomeDir() + "/.icewm";
+                dir = getHomeDir() + "/.icewm";
+                if ( ! dir.dirExists())
+                    dir.mkdir();
             }
         }
         MSG(("using %s for private configuration files", cstring(dir).c_str()));

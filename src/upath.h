@@ -7,6 +7,7 @@
 #endif
 
 typedef mstring pstring;
+class YStringArray;
 
 class upath {
 public:
@@ -28,6 +29,9 @@ public:
     upath child(const char *path) const;
     upath addExtension(const char *ext) const;
     pstring getExtension() const;
+    upath removeExtension() const;
+    upath replaceExtension(const char *ext) const;
+    cstring expand() const;
 
     bool fileExists() const;
     bool dirExists() const;
@@ -46,7 +50,9 @@ public:
     int remove() const;
     int renameAs(const pstring& dest) const;
     off_t fileSize() const;
-    bool glob(const char* pattern, class YStringArray& list) const;
+    char* loadText() const;
+    bool copyFrom(const upath& from, int mode = 0666) const;
+    bool testWritable(int mode = 0666) const;
 
     upath& operator=(const upath& p) {
         fPath = p.fPath;
@@ -73,6 +79,15 @@ public:
 
     static const pstring& sep() { return slash; }
     static const upath& root() { return rootPath; }
+
+    static bool hasglob(const char* pattern);
+    static bool glob(const char* pat, YStringArray& list, const char* opt = 0);
+
+    bool hasglob() const { return hasglob(string()); }
+    bool glob(YStringArray& list, const char* opt = 0) const {
+        return glob(string(), list, opt);
+    }
+
 private:
     pstring fPath;
 
@@ -89,7 +104,8 @@ public:
     ~fileptr() { close(); }
     void close() { if (fp) { fclose(fp); fp = 0; } }
     fileptr& operator=(FILE* ptr) { close(); fp = ptr; return *this; }
-    operator FILE*() { return fp; }
+    operator FILE*() const { return fp; }
+    FILE* operator->() const { return fp; }
 };
 
 upath findPath(ustring path, int mode, upath name);

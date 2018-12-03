@@ -28,9 +28,11 @@
 #include "prefs.h"
 #include "yprefs.h"
 #include "yrect.h"
+#include "atasks.h"
+#include "yxcontext.h"
 
-XContext frameContext;
-XContext clientContext;
+YContext<YFrameClient> clientContext("clientContext", false);
+YContext<YFrameWindow> frameContext("framesContext", false);
 
 YAction layerActionSet[WinLayerCount];
 
@@ -74,9 +76,6 @@ YWindowManager::YWindowManager(
         fFocusedWindow[w] = 0;
     fCreatedUpdated = true;
     fLayeredUpdated = true;
-
-    frameContext = XUniqueContext();
-    clientContext = XUniqueContext();
 
     setStyle(wsManager);
     setPointer(YXApplication::leftPointer);
@@ -154,11 +153,10 @@ void YWindowManager::grabKeys() {
 
     ///if (taskBar && taskBar->addressBar())
         GRAB_WMKEY(gKeySysAddressBar);
-///    if (runDlgCommand && runDlgCommand[0])
-///        GRAB_WMKEY(gKeySysRun);
     if (quickSwitch) {
         GRAB_WMKEY(gKeySysSwitchNext);
         GRAB_WMKEY(gKeySysSwitchLast);
+        GRAB_WMKEY(gKeySysSwitchClass);
     }
     GRAB_WMKEY(gKeySysWinNext);
     GRAB_WMKEY(gKeySysWinPrev);
@@ -213,8 +211,13 @@ void YWindowManager::grabKeys() {
     GRAB_WMKEY(gKeySysHideAll);
 
     GRAB_WMKEY(gKeySysShowDesktop);
-    if (taskBar != 0)
+    if (taskBar != 0) {
         GRAB_WMKEY(gKeySysCollapseTaskBar);
+        GRAB_WMKEY(gKeyTaskBarSwitchNext);
+        GRAB_WMKEY(gKeyTaskBarSwitchPrev);
+        GRAB_WMKEY(gKeyTaskBarMoveNext);
+        GRAB_WMKEY(gKeyTaskBarMovePrev);
+    }
 
     {
         YObjectArray<KProgram>::IterType k = keyProgs.iterator();
@@ -302,6 +305,12 @@ bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned int /*
         } else if (IS_WMKEY(k, vm, gKeySysSwitchLast)) {
             XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
             wmapp->getSwitchWindow()->begin(false, key.state);
+            return true;
+        } else if (gKeySysSwitchClass.eq(k, vm)) {
+            char *prop = frame && frame->client()->adopted()
+                       ? frame->client()->classHint()->resource() : 0;
+            XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
+            wmapp->getSwitchWindow()->begin(true, key.state, prop);
             return true;
         }
     }
@@ -493,9 +502,6 @@ bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned int /*
             taskBar->showAddressBar();
             return true;
         }
-        ///        } else if (IS_WMKEY(k, vm, gKeySysRun)) {
-        ///            if (runDlgCommand && runDlgCommand[0])
-        ///                app->runCommand(runDlgCommand);
     } else if (IS_WMKEY(k, vm, gKeySysShowDesktop)) {
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         wmActionListener->actionPerformed(actionShowDesktop, 0);
@@ -504,6 +510,23 @@ bool YWindowManager::handleWMKey(const XKeyEvent &key, KeySym k, unsigned int /*
         XAllowEvents(xapp->display(), AsyncKeyboard, key.time);
         if (taskBar)
             taskBar->handleCollapseButton();
+        return true;
+
+    } else if (IS_WMKEY(k, vm, gKeyTaskBarSwitchPrev)) {
+        if (taskBar)
+            taskBar->switchToPrev();
+        return true;
+    } else if (IS_WMKEY(k, vm, gKeyTaskBarSwitchNext)) {
+        if (taskBar)
+            taskBar->switchToNext();
+        return true;
+    } else if (IS_WMKEY(k, vm, gKeyTaskBarMovePrev)) {
+        if (taskBar)
+            taskBar->movePrev();
+        return true;
+    } else if (IS_WMKEY(k, vm, gKeyTaskBarMoveNext)) {
+        if (taskBar)
+            taskBar->moveNext();
         return true;
     }
     return false;
@@ -791,11 +814,7 @@ void YWindowManager::handleClientMessage(const XClientMessageEvent &message) {
 }
 
 void YWindowManager::handleFocus(const XFocusChangeEvent &focus) {
-    MSG(("window=0x%lX: %s mode=%d, detail=%d",
-         focus.window,
-         (focus.type == FocusIn) ? "focusIn" : "focusOut",
-         focus.mode,
-         focus.detail));
+    DBG logFocus((const union _XEvent&) focus);
     if (focus.mode == NotifyNormal) {
         if (focus.type == FocusIn) {
             if (focus.detail != NotifyInferior) {
@@ -815,81 +834,69 @@ void YWindowManager::handleFocus(const XFocusChangeEvent &focus) {
 }
 
 Window YWindowManager::findWindow(const char *resource) {
-    char *wmInstance = 0, *wmClass = 0;
+    if (isEmpty(resource))
+        return None;
 
-    char const * dot(resource ? strchr(resource, '.') : 0);
+    for (YFrameIter iter = focusedReverseIterator(); ++iter; ) {
+        YFrameClient* cli(iter->client());
+        if (cli && cli->adopted() && !cli->destroyed()) {
+            if (cli->classHint()->match(resource)) {
+                return cli->handle();
+            }
+        }
+    }
 
-    if (dot) {
-        wmInstance = (dot != resource ? newstr(resource, dot - resource) : 0);
-        wmClass = newstr(dot + 1);
-    } else if (resource)
-        wmInstance = newstr(resource);
+    Window match = None, root = desktop->handle(), parent;
+    xsmart<Window> clients;
+    unsigned count = 0;
+    XQueryTree(xapp->display(), root, &root, &parent, &clients, &count);
 
-    Window win = findWindow(desktop->handle(), wmInstance, wmClass);
+    for (unsigned i = 0; match == None && i < count; ++i) {
+        YWindow* ywin = windowContext.find(clients[i]);
+        if (0 == ywin) {
+            match = matchWindow(clients[i], resource);
+        }
+    }
 
-    delete[] wmClass;
-    delete[] wmInstance;
-
-    return win;
+    return match;
 }
 
-Window YWindowManager::findWindow(Window root, char const * wmInstance,
-                                  char const * wmClass) {
-    Window firstMatch = None;
-    Window parent, *clients(NULL);
-    unsigned nClients;
+Window YWindowManager::findWindow(Window win, char const* resource,
+                                  int maxdepth) {
+    if (isEmpty(resource))
+        return None;
 
-    XQueryTree(xapp->display(), root, &root, &parent, &clients, &nClients);
+    Window match = None, parent, root;
+    xsmart<Window> clients;
+    unsigned count = 0;
 
-    if (clients) {
-        unsigned n;
+    XQueryTree(xapp->display(), win, &root, &parent, &clients, &count);
 
-        for (n = 0; !firstMatch && n < nClients; ++n) {
-            XClassHint wmclass;
-
-            if (XGetClassHint(xapp->display(), clients[n], &wmclass)) {
-                if ((wmInstance == NULL ||
-                    strcmp(wmInstance, wmclass.res_name) == 0) &&
-                    (wmClass == NULL ||
-                    strcmp(wmClass, wmclass.res_class) == 0))
-                    firstMatch = clients[n];
-
-                XFree(wmclass.res_name);
-                XFree(wmclass.res_class);
-            }
-
-            if (!firstMatch)
-                firstMatch = findWindow(clients[n], wmInstance, wmClass);
-        }
-        XFree(clients);
+    for (unsigned i = 0; match == None && i < count; ++i) {
+        if (matchWindow(clients[i], resource))
+            match = clients[i];
     }
-    return firstMatch;
+    if (maxdepth) {
+        for (unsigned i = 0; match == None && i < count; ++i) {
+            match = findWindow(clients[i], resource, maxdepth - 1);
+        }
+    }
+
+    return match;
+}
+
+bool YWindowManager::matchWindow(Window win, char const* resource) {
+    ClassHint hint;
+    return XGetClassHint(xapp->display(), handle(), &hint)
+        && hint.match(resource);
 }
 
 YFrameWindow *YWindowManager::findFrame(Window win) {
-    union {
-        YFrameWindow *ptr;
-        XPointer xptr;
-    } frame;
-
-    if (XFindContext(xapp->display(), win,
-                     frameContext, &(frame.xptr)) == 0)
-        return frame.ptr;
-    else
-        return 0;
+    return frameContext.find(win);
 }
 
 YFrameClient *YWindowManager::findClient(Window win) {
-    union {
-        YFrameClient *ptr;
-        XPointer xptr;
-    } client;
-
-    if (XFindContext(xapp->display(), win,
-                     clientContext, &(client.xptr)) == 0)
-        return client.ptr;
-    else
-        return 0;
+    return clientContext.find(win);
 }
 
 void YWindowManager::setFocus(YFrameWindow *f, bool canWarp) {
@@ -978,14 +985,6 @@ void YWindowManager::loseFocus(YFrameWindow *window) {
     (void)window;
     PRECONDITION(window != 0);
     focusLastWindow();
-}
-
-void YWindowManager::activate(YFrameWindow *window, bool raise, bool canWarp) {
-    if (window) {
-        if (raise)
-            window->wmRaise();
-        window->activateWindow(canWarp);
-    }
 }
 
 YFrameWindow *YWindowManager::top(long layer) const {
@@ -1611,6 +1610,7 @@ YFrameWindow *YWindowManager::manageClient(Window win, bool mapClient) {
 
     if (doActivate && manualPlacement && wmState() == wmRUNNING &&
         client != windowList &&
+        client != taskBar &&
         !frame->owner() &&
         (!client->sizeHints() ||
          !(client->sizeHints()->flags & (USPosition | PPosition))))
@@ -1687,8 +1687,10 @@ void YWindowManager::unmanageClient(Window win, bool mapClient,
 void YWindowManager::destroyedClient(Window win) {
     YFrameWindow *frame = findFrame(win);
 
-    if (frame)
+    if (frame) {
+        frame->hide();
         delete frame;
+    }
     else {
         MSG(("destroyed: unknown window: 0x%lX", win));
     }
@@ -1724,6 +1726,32 @@ bool YWindowManager::focusTop(YFrameWindow *f) {
     return true;
 }
 
+YFrameWindow *YWindowManager::getFrameUnderMouse(long workspace) {
+    YFrameWindow* frame;
+    Window root, xwin = None;
+    YWindow* ywin;
+    xsmart<char> title;
+    int ignore;
+    unsigned ignore2;
+    if (XQueryPointer(xapp->display(), xapp->root(), &root, &xwin,
+                      &ignore, &ignore, &ignore, &ignore, &ignore2) &&
+        xwin != None &&
+        (ywin = windowContext.find(xwin)) != 0 &&
+        !ywin->adopted() &&
+        ywin->fetchTitle(&title) &&
+        strcmp(title, "Frame") == 0 &&
+        (frame = (YFrameWindow *) ywin)->isManaged() &&
+        frame->visibleOn(workspace) &&
+        frame->avoidFocus() == false &&
+        frame->client()->destroyed() == false &&
+        frame->client()->visible() &&
+        frame->client() != taskBar)
+    {
+        return frame;
+    }
+    return 0;
+}
+
 YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, long workspace) {
     if (workspace == -1)
         workspace = activeWorkspace();
@@ -1735,9 +1763,16 @@ YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, long workspac
         if (toFocus->isMinimized() ||
             toFocus->isHidden() ||
             !toFocus->visibleOn(workspace) ||
+            toFocus->client()->destroyed() ||
             toFocus->client() == taskBar ||
             toFocus->avoidFocus())
+        {
             toFocus = 0;
+        }
+    }
+
+    if (toFocus == 0) {
+        toFocus = getFrameUnderMouse(workspace);
     }
 
     if (toFocus == 0) {
@@ -1745,7 +1780,7 @@ YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, long workspac
         if (!skipAllWorkspaces)
             pass = 1;
         for (; pass < 3; pass++) {
-            YFrameIter w = focusedIterator();
+            YFrameIter w = focusedReverseIterator();
             while (++w) {
 #if 1
                 if ((w->client() && !w->client()->adopted()))
@@ -1759,8 +1794,11 @@ YFrameWindow *YWindowManager::getLastFocus(bool skipAllWorkspaces, long workspac
                     continue;
                 if (w->avoidFocus() || pass == 2)
                     continue;
-                if ((w->isAllWorkspaces() && w != fFocusWin) || pass == 1)
+                if ((w->isAllWorkspaces() && w != fFocusWin) || pass == 1) {
+                    if (w->client() != taskBar && toFocus == 0)
+                        toFocus = w;
                     continue;
+                }
                 if (w->client() == taskBar)
                     continue;
                 toFocus = w;

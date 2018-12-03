@@ -36,7 +36,7 @@ upath findPath(ustring path, int mode, upath name) {
 
 char *YConfig::getArgument(Argument *dest, char *source, bool comma) {
     char *p = source;
-    while (*p && (*p == ' ' || *p == '\t'))
+    while (ASCII::isSpaceOrTab(*p))
         p++;
 
     dest->reset();
@@ -147,7 +147,7 @@ static char *setOption(cfoption *options, char *name, const char *arg, bool appe
                 if ((arg[0] == '1' || arg[0] == '0') && arg[1] == 0) {
                     *(options[a].v.b.bool_value) = (arg[0] == '1');
                 } else {
-                    msg(_("Bad argument: %s for %s"), arg, name);
+                    msg(_("Bad argument: %s for %s [%d,%d]"), arg, name, 0, 1);
                     return rest;
                 }
                 return rest;
@@ -160,7 +160,8 @@ static char *setOption(cfoption *options, char *name, const char *arg, bool appe
                 if (v >= options[a].v.i.min && v <= options[a].v.i.max)
                     *(options[a].v.i.int_value) = v;
                 else {
-                    msg(_("Bad argument: %s for %s"), arg, name);
+                    msg(_("Bad argument: %s for %s [%d,%d]"), arg, name,
+                            options[a].v.i.min, options[a].v.i.max);
                     return rest;
                 }
                 return rest;
@@ -173,7 +174,8 @@ static char *setOption(cfoption *options, char *name, const char *arg, bool appe
                 if (v >= options[a].v.u.min && v <= options[a].v.u.max)
                     *(options[a].v.u.uint_value) = v;
                 else {
-                    msg(_("Bad argument: %s for %s"), arg, name);
+                    msg(_("Bad argument: %s for %s [%d,%d]"), arg, name,
+                            int(options[a].v.u.min), int(options[a].v.u.max));
                     return rest;
                 }
                 return rest;
@@ -242,6 +244,11 @@ static char *parseOption(cfoption *options, char *str) {
 
     Argument argument;
     for (bool append = false; append == (*p == ',') && *++p; append = true) {
+        if (append) {
+            while (ASCII::isWhiteSpace(*p) || ASCII::isEscapedLineEnding(p))
+                ++p;
+        }
+
         p = YConfig::getArgument(&argument, p, true);
         if (p == 0)
             break;
@@ -250,7 +257,7 @@ static char *parseOption(cfoption *options, char *str) {
         if (p == 0)
             return 0;
 
-        while (*p && (*p == ' ' || *p == '\t'))
+        while (ASCII::isSpaceOrTab(*p))
             p++;
     }
 
@@ -259,7 +266,7 @@ static char *parseOption(cfoption *options, char *str) {
 
 void YConfig::parseConfiguration(cfoption *options, char *data) {
     for (char *p = data; p && *p; ) {
-        while (ASCII::isWhiteSpace(*p) || (*p == '\\' && p[1] == '\n'))
+        while (ASCII::isWhiteSpace(*p) || ASCII::isEscapedLineEnding(p))
             p++;
 
         if (*p == '#') {
@@ -272,7 +279,7 @@ void YConfig::parseConfiguration(cfoption *options, char *data) {
 }
 
 bool YConfig::loadConfigFile(cfoption *options, upath fileName) {
-    char* buf = load_text_file(cstring(fileName));
+    char* buf = fileName.loadText();
     if (buf) {
         parseConfiguration(options, buf);
         delete[] buf;

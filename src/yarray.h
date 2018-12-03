@@ -44,6 +44,7 @@ public:
     virtual void remove(const SizeType index);
     virtual void clear();
     virtual void shrink(const SizeType reducedCount);
+    virtual void extend(const SizeType extendedCount);
 
     SizeType getCapacity() const { return fCapacity; }
     SizeType getCount() const { return fCount; }
@@ -268,6 +269,7 @@ public:
 
     YStringArray(YStringArray &other): BaseType((BaseType&)other) { }
     YStringArray(const YStringArray &other);
+    YStringArray(const char* cstr[], SizeType count = npos, SizeType cap = 0);
 
     YStringArray() { }
     explicit YStringArray(SizeType capacity) : YArray(capacity) { }
@@ -295,6 +297,7 @@ public:
         append(item); return *this;
     }
 
+    virtual void replace(const SizeType index, const char *str);
     virtual void remove(const SizeType index);
     virtual void clear();
     virtual void shrink(int reducedSize);
@@ -372,11 +375,11 @@ public:
 
     virtual ~MStringArray() { clear(); }
 
-    void append(mstring& item) {
+    void append(mstring item) {
         item.acquire();
         YBaseArray::append(&item);
     }
-    void insert(const SizeType index, mstring& item) {
+    void insert(const SizeType index, mstring item) {
         item.acquire();
         YBaseArray::insert(index, &item);
     }

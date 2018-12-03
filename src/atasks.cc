@@ -22,17 +22,12 @@ static YColorName minimizedTaskBarAppFg(&clrMinimizedTaskBarAppText);
 static YColorName minimizedTaskBarAppBg(&clrMinimizedTaskBarApp);
 static YColorName invisibleTaskBarAppFg(&clrInvisibleTaskBarAppText);
 static YColorName invisibleTaskBarAppBg(&clrInvisibleTaskBarApp);
-static ref<YFont> normalTaskBarFont;
-static ref<YFont> activeTaskBarFont;
+ref<YFont> TaskBarApp::normalTaskBarFont;
+ref<YFont> TaskBarApp::activeTaskBarFont;
 
 lazy<YTimer> TaskBarApp::fRaiseTimer;
 
 TaskBarApp::TaskBarApp(ClientData *frame, TaskPane *taskPane, YWindow *aParent): YWindow(aParent) {
-    if (normalTaskBarFont == null)
-        normalTaskBarFont = YFont::getFont(XFA(normalTaskBarFontName));
-    if (activeTaskBarFont == null)
-        activeTaskBarFont = YFont::getFont(XFA(activeTaskBarFontName));
-
     fTaskPane = taskPane;
     fFrame = frame;
     selected = 0;
@@ -53,7 +48,7 @@ TaskBarApp::~TaskBarApp() {
 }
 
 void TaskBarApp::activate() const {
-    getFrame()->activateWindow(true);
+    getFrame()->activateWindow(true, fFlashing);
 }
 
 bool TaskBarApp::isFocusTraversable() {
@@ -67,6 +62,7 @@ int TaskBarApp::getOrder() const {
 void TaskBarApp::setShown(bool ashow) {
     if (ashow != fShown) {
         fShown = ashow;
+        fTaskPane->relayout();
     }
 }
 
@@ -81,15 +77,23 @@ void TaskBarApp::setFlash(bool flashing) {
         } else {
             //fFlashTimer->stopTimer();
         }
+
+        if (fShown == false)
+            fTaskPane->relayout();
     }
 }
 
 void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
     YColor bg, fg;
     ref<YPixmap> bgPix;
+    ref<YPixmap> bgLeft;
+    ref<YPixmap> bgRight;
     ref<YImage> bgGrad;
+    ref<YImage> bgLeftG;
+    ref<YImage> bgRightG;
 
     int p(0);
+    int left = 0;
     int style = 0;
 
     if (selected == 3)
@@ -104,13 +108,21 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
             bg = activeTaskBarAppBg;
             fg = activeTaskBarAppFg;
             bgPix = taskbuttonactivePixmap;
+            bgLeft = taskbuttonactiveLeftPixmap;
+            bgRight = taskbuttonactiveRightPixmap;
             bgGrad = taskbuttonactivePixbuf;
+            bgLeftG = taskbuttonactiveLeftPixbuf;
+            bgRightG = taskbuttonactiveRightPixbuf;
             style = 1;
         } else {
             bg = normalTaskBarAppBg;
             fg = normalTaskBarAppFg;
             bgPix = taskbuttonPixmap;
+            bgLeft = taskbuttonLeftPixmap;
+            bgRight = taskbuttonRightPixmap;
             bgGrad = taskbuttonPixbuf;
+            bgLeftG = taskbuttonLeftPixbuf;
+            bgRightG = taskbuttonRightPixbuf;
             style = 1;
         }
     } else if (!getFrame()->visibleNow()) {
@@ -122,17 +134,29 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
         bg = minimizedTaskBarAppBg;
         fg = minimizedTaskBarAppFg;
         bgPix = taskbuttonminimizedPixmap;
+        bgLeft = taskbuttonminimizedLeftPixmap;
+        bgRight = taskbuttonminimizedRightPixmap;
         bgGrad = taskbuttonminimizedPixbuf;
+        bgLeftG = taskbuttonminimizedLeftPixbuf;
+        bgRightG = taskbuttonminimizedRightPixbuf;
     } else if (getFrame()->focused()) {
         bg = activeTaskBarAppBg;
         fg = activeTaskBarAppFg;
         bgPix = taskbuttonactivePixmap;
+        bgLeft = taskbuttonactiveLeftPixmap;
+        bgRight = taskbuttonactiveRightPixmap;
         bgGrad = taskbuttonactivePixbuf;
+        bgLeftG = taskbuttonactiveLeftPixbuf;
+        bgRightG = taskbuttonactiveRightPixbuf;
     } else {
         bg = normalTaskBarAppBg;
         fg = normalTaskBarAppFg;
         bgPix = taskbuttonPixmap;
+        bgLeft = taskbuttonLeftPixmap;
+        bgRight = taskbuttonRightPixmap;
         bgGrad = taskbuttonPixbuf;
+        bgLeftG = taskbuttonLeftPixbuf;
+        bgRightG = taskbuttonRightPixbuf;
     }
 
     if (style == 3) {
@@ -169,24 +193,59 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
         int const ds(wmLook == lookFlat ? 0: wmLook == lookMetal ? 4 : 3);
 
         if ((int) width() > ds && (int) height() > ds) {
-            if (bgGrad != null)
-                g.drawGradient(bgGrad, dp, dp, width() - ds, height() - ds);
-            else
-            if (bgPix != null)
-                g.fillPixmap(bgPix, dp, dp, width() - ds, height() - ds);
-            else
+            if (bgGrad != null) {
+                int x = dp;
+                int y = dp;
+                unsigned w = width() - ds;
+                unsigned h = height() - ds;
+                if (taskbuttonIconOffset &&
+                    bgLeftG != null &&
+                    bgRightG != null &&
+                    3 * taskbuttonIconOffset <= w)
+                {
+                    g.drawGradient(bgLeftG, x, y,
+                                   bgLeftG->width(), h);
+                    x += left = bgLeftG->width();
+                    g.drawGradient(bgRightG, w - bgRightG->width(), y,
+                                   bgRightG->width(), h);
+                    w -= bgLeftG->width() + bgRightG->width();
+                }
+                g.drawGradient(bgGrad, x, y, w, h);
+            }
+            else if (bgPix != null) {
+                int x = dp;
+                int y = dp;
+                unsigned w = width() - ds;
+                unsigned h = height() - ds;
+                if (taskbuttonIconOffset &&
+                    bgLeft != null &&
+                    bgRight != null &&
+                    3 * taskbuttonIconOffset <= w)
+                {
+                    g.fillPixmap(bgLeft, x, y,
+                                 bgLeft->width(), h);
+                    x += left = bgLeft->width();
+                    g.fillPixmap(bgRight, w - bgRight->width(), y,
+                                 bgRight->width(), h);
+                    w -= bgLeft->width() + bgRight->width();
+                }
+                g.fillPixmap(bgPix, x, y, w, h);
+            }
+            else {
                 g.fillRect(dp, dp, width() - ds, height() - ds);
+            }
         }
     }
 
     ref<YIcon> icon(getFrame()->getIcon());
+    bool iconDrawn = false;
 
     if (taskBarShowWindowIcons && icon != null) {
         int iconSize = YIcon::smallSize();
 
         int const y((height() - 3 - iconSize -
                      ((wmLook == lookMetal) ? 1 : 0)) / 2);
-        icon->draw(g, p + 1, p + 1 + y, iconSize);
+        iconDrawn = icon->draw(g, p + max(1, left), p + 1 + y, iconSize);
     }
 
     ustring str = getFrame()->getIconTitle();
@@ -194,18 +253,16 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
         str = getFrame()->getTitle();
 
     if (str != null) {
-        ref<YFont> font =
-            getFrame()->focused() ? activeTaskBarFont : normalTaskBarFont;
-
+        ref<YFont> font = getFont();
         if (font != null) {
             g.setColor(fg);
             g.setFont(font);
 
             int iconSize = 0;
-            int pad = 1;
-            if (taskBarShowWindowIcons && icon != null) {
+            int pad = max(1, left);
+            if (taskBarShowWindowIcons && iconDrawn) {
                 iconSize = YIcon::smallSize();
-                pad = 3;
+                pad += 2;
             }
             int const tx = pad + iconSize;
             int const ty = max(2U,
@@ -217,6 +274,35 @@ void TaskBarApp::paint(Graphics &g, const YRect &/*r*/) {
             g.drawStringEllipsis(p + tx, p + ty, str, wm);
         }
     }
+}
+
+unsigned TaskBarApp::maxHeight() {
+    unsigned activeHeight =
+        (getActiveFont() != null) ? getActiveFont()->height() : 0;
+    unsigned normalHeight =
+        (getNormalFont() != null) ? getNormalFont()->height() : 0;
+    return 2 + max(activeHeight, normalHeight);
+}
+
+ref<YFont> TaskBarApp::getFont() {
+    ref<YFont> font;
+    if (getFrame()->focused())
+        font = getActiveFont();
+    if (font == null)
+        font = getNormalFont();
+    return font;
+}
+
+ref<YFont> TaskBarApp::getNormalFont() {
+    if (normalTaskBarFont == null)
+        normalTaskBarFont = YFont::getFont(XFA(normalTaskBarFontName));
+    return normalTaskBarFont;
+}
+
+ref<YFont> TaskBarApp::getActiveFont() {
+    if (activeTaskBarFont == null)
+        activeTaskBarFont = YFont::getFont(XFA(activeTaskBarFontName));
+    return activeTaskBarFont;
 }
 
 void TaskBarApp::handleButton(const XButtonEvent &button) {
@@ -279,6 +365,20 @@ void TaskBarApp::handleCrossing(const XCrossingEvent &crossing) {
     YWindow::handleCrossing(crossing);
 }
 
+void TaskBarApp::switchToPrev() {
+    TaskBarApp* act = fTaskPane->getActive();
+    TaskBarApp* app = Elvis(fTaskPane->predecessor(act), this);
+    if (app != act)
+        app->activate();
+}
+
+void TaskBarApp::switchToNext() {
+    TaskBarApp* act = fTaskPane->getActive();
+    TaskBarApp* app = Elvis(fTaskPane->successor(act), this);
+    if (app != act)
+        app->activate();
+}
+
 void TaskBarApp::handleClick(const XButtonEvent &up, int /*count*/) {
     if (up.button == 3) {
         getFrame()->popupSystemMenu(this, up.x_root, up.y_root,
@@ -286,18 +386,10 @@ void TaskBarApp::handleClick(const XButtonEvent &up, int /*count*/) {
                                     YPopupWindow::pfCanFlipHorizontal |
                                     YPopupWindow::pfPopupMenu);
     }
-    else if (up.button == Button4) {
-        TaskBarApp* act = fTaskPane->getActive();
-        TaskBarApp* app = Elvis(fTaskPane->predecessor(act), this);
-        if (app != act)
-            app->activate();
-    }
-    else if (up.button == Button5) {
-        TaskBarApp* act = fTaskPane->getActive();
-        TaskBarApp* app = Elvis(fTaskPane->successor(act), this);
-        if (app != act)
-            app->activate();
-    }
+    else if (up.button == Button4 && taskBarUseMouseWheel)
+        switchToPrev();
+    else if (up.button == Button5 && taskBarUseMouseWheel)
+        switchToNext();
 }
 
 void TaskBarApp::handleDNDEnter() {
@@ -461,7 +553,9 @@ void TaskPane::handleClick(const XButtonEvent &up, int count) {
     if (up.button == 3 && count == 1 && IS_BUTTON(up.state, Button3Mask)) {
         fTaskBar->contextMenu(up.x_root, up.y_root);
     }
-    else if (up.button == Button4 || up.button == Button5) {
+    else if ((up.button == Button4 || up.button == Button5)
+           && taskBarUseMouseWheel)
+    {
         TaskBarApp* app = getActive();
         if (app)
             app->handleClick(up, count);
@@ -485,6 +579,10 @@ void TaskPane::paint(Graphics &g, const YRect &/*r*/) {
         g.fillPixmap(taskbackPixmap, 0, 0, width(), height(), x(), y());
     else
         g.fillRect(0, 0, width(), height());
+}
+
+unsigned TaskPane::maxHeight() {
+    return TaskBarApp::maxHeight();
 }
 
 void TaskPane::handleMotion(const XMotionEvent &motion) {
@@ -556,6 +654,54 @@ void TaskPane::endDrag() {
         relayout();
         relayoutNow();
     }
+}
+
+void TaskPane::movePrev() {
+    TaskBarApp* act = getActive();
+    if (!act)
+        return;
+    TaskBarApp* other = predecessor(act);
+    if (!other)
+        return;
+    const int other_index = find(fApps, other);
+    const int act_index = find(fApps, act);
+
+    if (other_index < 0 || other_index > act_index)
+        return;
+
+    fApps.swap(other_index, act_index);
+    relayout();
+    relayoutNow();
+}
+
+void TaskPane::moveNext() {
+    TaskBarApp* act = getActive();
+    if (!act)
+        return;
+    TaskBarApp* other = successor(act);
+    if (!other)
+        return;
+    const int other_index = find(fApps, other);
+    const int act_index = find(fApps, act);
+
+    if (act_index < 0 || other_index < act_index)
+        return;
+
+    fApps.swap(other_index, act_index);
+    relayout();
+    relayoutNow();
+}
+
+void TaskPane::switchToPrev() {
+        TaskBarApp* app = getActive();
+        if (app)
+            app->switchToPrev();
+}
+
+void TaskPane::switchToNext() {
+        TaskBarApp* app = getActive();
+        if (app)
+            app->switchToNext();
 }
 
 // vim: set sw=4 ts=4 et:

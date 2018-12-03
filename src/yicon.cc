@@ -12,14 +12,51 @@
 #include "prefs.h"
 #include "yprefs.h"
 #include "ypaths.h"
+#ifdef HAVE_WORDEXP
+#include <wordexp.h>
+#endif
 
 #include "intl.h"
 
 static ref<YResourcePaths> iconPaths;
+static MStringArray iconDirs;
 
 static void initIconPaths() {
     if (iconPaths == null) {
-        iconPaths = YResourcePaths::subdirs("icons/");
+        iconPaths = YResourcePaths::subdirs("icons");
+    }
+    if (iconDirs.getCount() == 0 && nonempty(iconPath)) {
+        char* copy = newstr(iconPath);
+        char* save = 0;
+        for (char *tok = strtok_r(copy, ":", &save);
+            tok != 0; tok = strtok_r(0, ":", &save))
+        {
+#ifdef HAVE_WORDEXP
+            wordexp_t exp;
+            if (wordexp(tok, &exp, WRDE_NOCMD) == 0) {
+                for (unsigned i = 0; i < exp.we_wordc; ++i) {
+                    mstring dir(exp.we_wordv[i]);
+                    if (find(iconDirs, dir) == -1) {
+                        if (upath(dir).dirExists()) {
+                            iconDirs += dir;
+                        }
+                    }
+                }
+                wordfree(&exp);
+            }
+#else
+            iconDirs.append(tok);
+#endif
+        }
+        delete[] copy;
+
+        YResourcePaths::IterType iter = iconPaths->reverseIterator();
+        while (++iter) {
+            upath icons(iter->relative("icons"));
+            if (find(iconDirs, icons.path()) >= 0) {
+                iter.remove();
+            }
+        }
     }
 }
 
@@ -64,11 +101,10 @@ upath YIcon::findIcon(upath dir, upath base, unsigned size) {
     const size_t iconSize = sizeof iconName;
     const cstring cbase(base.string());
     const char* cBaseStr = cbase.c_str();
-    static const char iconExts[][5] = { ".png",
-#if 0
-#if defined(CONFIG_GDK_PIXBUF_XLIB) || defined(CONFIG_LIBSVG)
+    static const char iconExts[][5] = {
+            ".png",
+#if defined(CONFIG_GDK_PIXBUF_XLIB) && defined(CONFIG_LIBRSVG)
             ".svg",
-#endif
 #endif
             ".xpm"
     };
@@ -86,12 +122,27 @@ upath YIcon::findIcon(upath dir, upath base, unsigned size) {
         }
     }
 
+    // XXX: actually, we should distinguish by purpose (app, category, mimetype, etc.)
+    // For now, check by the same schema hoping that the file name provides uniquie identity information.
+    static const char* xdg_icon_patterns[] = {
+            "/%ux%u/apps/%s",
+            "/%ux%u/categories/%s",
+            0
+    };
+    static const char* xdg_folder_patterns[] = {
+            "/%ux%u/apps",
+            "/%ux%u/categories",
+            0
+    };
+
+
     if (hasImageExtension) {
-        snprintf(iconName, iconSize,
-                "/%ux%u/apps/%s", size, size, cBaseStr);
-        fullpath = dir + iconName;
-        if (isIconFile(fullpath))
-            return fullpath;
+        for (const char **p = xdg_icon_patterns; *p; ++p) {
+            snprintf(iconName, iconSize, *p, size, size, cBaseStr);
+            fullpath = dir + iconName;
+            if (isIconFile(fullpath))
+                return fullpath;
+        }
     }
     else if (base.path().endsWith("/") == false) {
         for (int i = 0; i < numIconExts; ++i) {
@@ -108,14 +159,17 @@ upath YIcon::findIcon(upath dir, upath base, unsigned size) {
                 return fullpath;
         }
 
-        snprintf(iconName, iconSize, "/%ux%u/apps", size, size);
-        upath apps(dir + iconName);
-        if (apps.dirExists()) {
-            for (int i = 0; i < numIconExts; ++i) {
-                snprintf(iconName, iconSize, "/%s%s", cBaseStr, iconExts[i]);
-                fullpath = apps + iconName;
-                if (isIconFile(fullpath))
-                    return fullpath;
+        for (const char **p = xdg_folder_patterns; *p; ++p) {
+            snprintf(iconName, iconSize, *p, size, size);
+            upath apps(dir + iconName);
+            if (apps.dirExists()) {
+                for (int i = 0; i < numIconExts; ++i) {
+                    snprintf(iconName, iconSize, "/%s%s", cBaseStr,
+                            iconExts[i]);
+                    fullpath = apps + iconName;
+                    if (isIconFile(fullpath))
+                        return fullpath;
+                }
             }
         }
     }
@@ -126,38 +180,18 @@ upath YIcon::findIcon(upath dir, upath base, unsigned size) {
 upath YIcon::findIcon(unsigned size) {
     initIconPaths();
 
-    mstring copy(iconPath), part;
-    while (copy.splitall(PATHSEP, &part, &copy)) {
-        if (part.nonempty()) {
-            upath path(part);
-            if (path.dirExists()) {
-                upath fullpath(findIcon(path, fPath, size));
-                if (fullpath != null) {
-                    return fullpath;
-                }
-            }
+    for (MStringArray::IterType iter = iconDirs.iterator(); ++iter; ) {
+        upath path(findIcon(*iter, fPath, size));
+        if (path != null) {
+            return path;
         }
     }
 
-    copy = iconPath;
-    for (int i = 0; i < iconPaths->getCount(); i++) {
-        upath path(iconPaths->getPath(i) + "icons");
-        int k = copy.find(path);
-        if (k >= 0 && (k == 0 || copy[k - 1] == PATHSEP)) {
-            int ch = copy[path.length()];
-            if (ch == -1 || ch == PATHSEP) {
-                continue;
-            }
-            if (ch == SLASH) {
-                int ch2 = copy[path.length() + 1];
-                if (ch2 == -1 || ch2 == PATHSEP) {
-                    continue;
-                }
-            }
-        }
-        path = findIcon(path, fPath, size);
-        if (path != null)
+    for (YResourcePaths::IterType iter = iconPaths->iterator(); ++iter; ) {
+        upath path(findIcon(iter->relative("icons"), fPath, size));
+        if (path != null) {
             return path;
+        }
     }
 
     MSG(("Icon \"%s\" not found.", fPath.string().c_str()));
@@ -174,19 +208,7 @@ ref<YImage> YIcon::loadIcon(unsigned size) {
         if (fPath.isAbsolute() && fPath.fileExists()) {
             loadPath = fPath;
         } else {
-            const unsigned sizes[] = {
-                size, hugeSize(), largeSize(), smallSize()
-            };
-            for (int i = 0; i < (int) ACOUNT(sizes); ++i) {
-                int k = i;
-                while (--k >= 0 && sizes[k] != sizes[i]) { }
-                if (k < 0) {
-                    loadPath = findIcon(size);
-                    if (loadPath != null) {
-                        break;
-                    }
-                }
-            }
+            loadPath = findIcon(size);
         }
         if (loadPath != null) {
             cstring cs(loadPath.path());
@@ -311,7 +333,7 @@ ref<YIcon> YIcon::getIcon(const char *name) {
         newicon->setCached(true);
         iconCache.insert(-n - 1, newicon);
     }
-    return getIcon(name);
+    return newicon;
 }
 
 void YIcon::freeIcons() {
@@ -324,6 +346,9 @@ void YIcon::freeIcons() {
         icon = null;
         iconCache.remove(k);
     }
+    iconPaths->clear();
+    iconPaths = null;
+    iconDirs.clear();
 }
 
 unsigned YIcon::menuSize() {
@@ -342,7 +367,7 @@ unsigned YIcon::hugeSize() {
     return hugeIconSize;
 }
 
-void YIcon::draw(Graphics &g, int x, int y, int size) {
+bool YIcon::draw(Graphics &g, int x, int y, int size) {
     ref<YImage> image = getScaledIcon(size);
     if (image != null) {
         if (!doubleBuffer) {
@@ -350,7 +375,9 @@ void YIcon::draw(Graphics &g, int x, int y, int size) {
         } else {
             g.compositeImage(image, 0, 0, size, size, x, y);
         }
+        return true;
     }
+    return false;
 }
 
 // vim: set sw=4 ts=4 et:

@@ -11,7 +11,12 @@ class IAppletContainer;
 class YSMListener;
 class YMenu;
 
-class YClock: public IApplet, private YTimerListener, private YActionListener {
+class YClock:
+    public IApplet,
+    private Picturer,
+    private YTimerListener,
+    private YActionListener
+{
 public:
     YClock(YSMListener *smActionListener, IAppletContainer* iapp, YWindow *aParent);
     virtual ~YClock();
@@ -24,6 +29,7 @@ private:
     virtual void handleButton(const XButtonEvent &button);
     virtual void handleCrossing(const XCrossingEvent &crossing);
     virtual void handleClick(const XButtonEvent &up, int count);
+    virtual void handleExpose(const XExposeEvent &e);
 
     virtual void updateToolTip();
     virtual bool handleTimer(YTimer *t);
@@ -44,6 +50,7 @@ private:
     IAppletContainer* iapp;
     osmart<YMenu> fMenu;
     const char* fTimeFormat;
+    long fPid;
 
     void changeTimeFormat(const char* format);
     using IApplet::getPixmap;

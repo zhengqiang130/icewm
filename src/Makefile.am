@@ -301,6 +301,7 @@ icewm_SOURCES = \
 	atray.h \
 	ysmapp.cc \
 	ysmapp.h \
+	yxcontext.h \
 	yxtray.cc \
 	yxtray.h
 icewm_LDADD = libitk.la libice.la $(IMAGE_LIBS) $(XSM_LIBS) $(CORE_LIBS)
@@ -361,6 +362,7 @@ icesound_LDADD = libice.la $(AUDIO_LIBS) $(CORE_LIBS) @LIBINTL@
 icewm_menu_fdo_SOURCES = \
 	sysdep.h \
 	base.h \
+	fdospecgen.h \
 	fdomenu.cc
 icewm_menu_fdo_LDADD = libice.la $(GIO_LIBS)
 

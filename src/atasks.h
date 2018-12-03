@@ -33,6 +33,10 @@ public:
 
     int getOrder() const;
     void setFlash(bool urgent);
+    void switchToPrev();
+    void switchToNext();
+
+    static unsigned maxHeight();
 
 private:
     ClientData *fFrame;
@@ -44,6 +48,13 @@ private:
     int selected;
     lazy<YTimer> fFlashTimer;
     static lazy<YTimer> fRaiseTimer;
+
+    ref<YFont> getFont();
+    static ref<YFont> getNormalFont();
+    static ref<YFont> getActiveFont();
+
+    static ref<YFont> normalTaskBarFont;
+    static ref<YFont> activeTaskBarFont;
 };
 
 class TaskPane: public YWindow {
@@ -60,6 +71,7 @@ public:
     TaskBarApp *successor(TaskBarApp *tapp);
     void removeApp(YFrameWindow *frame);
 
+    static unsigned maxHeight();
     void relayout() { fNeedRelayout = true; }
     void relayoutNow();
 
@@ -77,6 +89,10 @@ public:
                  {parent()->handleDrag(down,motion);}//LXP
     virtual void handleEndDrag(const XButtonEvent &down, const XButtonEvent &up)//LXP
                  {parent()->handleEndDrag(down,up);}//LXP
+    void switchToPrev();
+    void switchToNext();
+    void movePrev();
+    void moveNext();
 private:
     IAppletContainer *fTaskBar;
 

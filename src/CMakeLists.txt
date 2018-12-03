@@ -65,6 +65,7 @@ endif()
 option(CONFIG_LIBPNG "(Experimental) PNGLIB image loader" on)
 option(CONFIG_LIBJPEG "JPEGLIB image loader" on)
 option(CONFIG_GDK_PIXBUF_XLIB "GDK-PIXBUF based image loader" off)
+option(CONFIG_LIBRSVG "(Optional) SVG image loader" off)
 option(CONFIG_XPM "(Optional) XPM image loader" on)
 option(CONFIG_I18N "Define to enable internationalization" on)
 option(CONFIG_RENDER "Define to enable XRENDER extension" on)
@@ -82,26 +83,6 @@ IF("" STREQUAL "${CONFIG_UNICODE_SET}")
 ELSE()
     MESSAGE(STATUS "Configured custom unicode set: ${CONFIG_UNICODE_SET}.")
 ENDIF()
-
-if(CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_XPM)
-    #ok
-    set(CONFIG_LIBPNG off)
-    set(CONFIG_LIBJPEG off)
-elseif(CONFIG_XPM AND NOT CONFIG_GDK_PIXBUF_XLIB)
-    #ok
-    if (NOT CONFIG_LIBPNG)
-        message(WARNING "LIBPNG is recommended for PNG image support")
-    endif()
-    if (NOT CONFIG_LIBJPEG)
-        message(WARNING "LIBJPEG is advisable for backgrounds in icewmbg")
-    endif()
-else()
-    MESSAGE(FATAL_ERROR "Possible combination of image loaders are:
-    -DCONFIG_XPM=on -DCONFIG_LIBPNG=on -DCONFIG_GDK_PIXBUF_XLIB=off
-    or
-    -DCONFIG_XPM=off -DCONFIG_LIBPNG=off -DCONFIG_GDK_PIXBUF_XLIB=on
-")
-endif()
 
 # TODO: find some common helper to handle that variables
 if(ENABLE_NLS OR CONFIG_I18N)
@@ -130,7 +111,7 @@ CHECK_FUNCTION_EXISTS(basename HAVE_BASENAME)
 CHECK_FUNCTION_EXISTS(dup2 HAVE_DUP2)
 CHECK_FUNCTION_EXISTS(gethostbyname HAVE_GETHOSTBYNAME)
 CHECK_FUNCTION_EXISTS(gethostname HAVE_GETHOSTNAME)
-CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG)
+CHECK_FUNCTION_EXISTS(getloadavg HAVE_GETLOADAVG2)
 CHECK_FUNCTION_EXISTS(gettimeofday HAVE_GETTIMEOFDAY)
 CHECK_FUNCTION_EXISTS(mblen HAVE_MBLEN)
 CHECK_FUNCTION_EXISTS(memchr HAVE_MEMCHR)
@@ -155,16 +136,22 @@ CHECK_FUNCTION_EXISTS(strspn HAVE_STRSPN)
 CHECK_FUNCTION_EXISTS(strstr HAVE_STRSTR)
 CHECK_FUNCTION_EXISTS(strtol HAVE_STRTOL)
 CHECK_FUNCTION_EXISTS(strtoul HAVE_STRTOL)
+CHECK_FUNCTION_EXISTS(strlcpy HAVE_STRLCPY)
+CHECK_FUNCTION_EXISTS(strlcat HAVE_STRLCAT)
 CHECK_FUNCTION_EXISTS(sysctlbyname HAVE_SYSCTLBYNAME)
 CHECK_FUNCTION_EXISTS(sysinfo HAVE_SYSINFO)
 CHECK_FUNCTION_EXISTS(uname HAVE_UNAME)
 CHECK_FUNCTION_EXISTS(wordexp HAVE_WORDEXP)
+CHECK_FUNCTION_EXISTS(if_indextoname HAVE_IF_INDEXTONAME)
+CHECK_FUNCTION_EXISTS(nameindex HAVE_IF_NAMEINDEX)
+CHECK_FUNCTION_EXISTS(if_nametoindex HAVE_IF_NAMETOINDEX)
 
 CHECK_LIBRARY_EXISTS (X11 XInternAtoms "" HAVE_XINTERNATOMS)
 
 # perl -e 'do { s/\.|\//_/g; $_=uc $_;  print "#cmakedefine HAVE_$_\n"} for @ARGV' `cat headersDa`
 # perl -e 'do {my $orig=$_; s/\.|\//_/g; $_=uc $_; print "CHECK_INCLUDE_FILE_CXX($orig HAVE_$_)\n"} for @ARGV' `cat headersDa`
 CHECK_INCLUDE_FILE_CXX(fcntl.h HAVE_FCNTL_H)
+CHECK_INCLUDE_FILE_CXX(kstat.h HAVE_KSTAT_H)
 CHECK_INCLUDE_FILE_CXX(langinfo.h HAVE_LANGINFO_H)
 CHECK_INCLUDE_FILE_CXX(libintl.h HAVE_LIBINTL_H)
 CHECK_INCLUDE_FILE_CXX(limits.h HAVE_LIMITS_H)
@@ -175,17 +162,19 @@ CHECK_INCLUDE_FILE_CXX(sndfile.h HAVE_SNDFILE_H)
 CHECK_INCLUDE_FILE_CXX(stddef.h HAVE_STDDEF_H)
 CHECK_INCLUDE_FILE_CXX(stdlib.h HAVE_STDLIB_H)
 CHECK_INCLUDE_FILE_CXX(string.h HAVE_STRING_H)
+CHECK_INCLUDE_FILE_CXX(strings.h HAVE_STRINGS_H)
+CHECK_INCLUDE_FILE_CXX(sysctl.h HAVE_SYSCTL_H)
 CHECK_INCLUDE_FILE_CXX(sys/file.h HAVE_SYS_FILE_H)
 CHECK_INCLUDE_FILE_CXX(sys/ioctl.h HAVE_SYS_IOCTL_H)
-CHECK_INCLUDE_FILE_CXX(sys/param.h HAVE_SYS_PARAM_H)
 CHECK_INCLUDE_FILE_CXX(sys/socket.h HAVE_SYS_SOCKET_H)
+CHECK_INCLUDE_FILE_CXX(sys/sysctl.h HAVE_SYS_SYSCTL_H)
 CHECK_INCLUDE_FILE_CXX(sys/time.h HAVE_SYS_TIME_H)
 CHECK_INCLUDE_FILE_CXX(unistd.h HAVE_UNISTD_H)
 CHECK_INCLUDE_FILE_CXX(wchar.h HAVE_WCHAR_H)
 CHECK_INCLUDE_FILE_CXX(sched.h HAVE_SCHED_H)
+CHECK_INCLUDE_FILE_CXX(sys/sched.h HAVE_SYS_SCHED_H)
 CHECK_INCLUDE_FILE_CXX(sys/dkstat.h HAVE_SYS_DKSTAT_H)
 CHECK_INCLUDE_FILE_CXX(sys/param.h HAVE_SYS_PARAM_H)
-CHECK_INCLUDE_FILE_CXX(sys/sysctl.h HAVE_SYS_SYSCTL_H)
 CHECK_INCLUDE_FILE_CXX(uvm/uvm_param.h HAVE_UVM_UVM_PARAM_H)
 CHECK_INCLUDE_FILE_CXX(libgen.h HAVE_LIBGEN_H)
 CHECK_INCLUDE_FILE_CXX(machine/apmvar.h HAVE_MACHINE_APMVAR_H)
@@ -205,18 +194,64 @@ pkg_check_modules(fontconfig fontconfig)
 pkg_check_modules(xext xext)
 pkg_check_modules(x11 x11)
 
+# XXX: the image loader selection became a big mess but it is hard to revert now
+# It would have been a better idea to use different names for the user-specified
+# options and do the logics here.
+# But for now, this self-adapting code modifies the option variables.
+
+set(HINT_IMG_LOADERS  "Possible combination of image loaders are:
+    -DCONFIG_XPM=on -DCONFIG_LIBPNG=on -DCONFIG_GDK_PIXBUF_XLIB=off
+    or
+    -DCONFIG_XPM=off -DCONFIG_LIBPNG=off -DCONFIG_GDK_PIXBUF_XLIB=on
+")
+# basic user configuration error check
+if(CONFIG_GDK_PIXBUF_XLIB AND NOT CONFIG_XPM)
+    #ok
+    set(CONFIG_LIBPNG off)
+    set(CONFIG_LIBJPEG off)
+    if (NOT CONFIG_LIBRSVG)
+        message(WARNING "CONFIG_LIBRSVG is recommended for SVG image support")
+    endif()
+elseif(CONFIG_XPM AND NOT CONFIG_GDK_PIXBUF_XLIB)
+    #ok
+    if (NOT CONFIG_LIBPNG)
+        message(WARNING "LIBPNG is recommended for PNG image support")
+    endif()
+    if (NOT CONFIG_LIBJPEG)
+        message(WARNING "LIBJPEG is advisable for backgrounds in icewmbg")
+    endif()
+else()
+    MESSAGE(FATAL_ERROR "${HINT_IMG_LOADERS}")
+endif()
+
 if(CONFIG_GDK_PIXBUF_XLIB)
     pkg_check_modules(pixbuf gdk-pixbuf-xlib-2.0)
     if(NOT pixbuf_FOUND)
-        message(FATAL_ERROR "GDX-PIXBUF image loader selected but its dev files were not found.")
+        message(FATAL_ERROR "GDX-PIXBUF image loader selected but its dev files were not found.
+${HINT_IMG_LOADERS}")
     endif()
+    set(CONFIG_XPM off)
+    set(CONFIG_LIBPNG off)
+    set(CONFIG_IMLIB off)
+    set(CONFIG_LIBJPEG off)
     LIST(APPEND icewm_img_libs ${pixbuf_LDFLAGS})
+endif()
+
+# this is a) optional, b) loaded through pixbuf anyway
+if (CONFIG_LIBRSVG)
+    pkg_check_modules(librsvg librsvg-2.0)
+    if(NOT librsvg_FOUND)
+        message(WARNING "SVG image loader selected but librsvg dev files not found. SVG support will be not available.")
+        set(CONFIG_LIBRSVG off)
+    endif()
+    LIST(APPEND icewm_img_libs ${librsvg_LDFLAGS})
 endif()
 
 if(CONFIG_XPM)
     pkg_check_modules(libxpm xpm)
     if(NOT libxpm_FOUND)
-        message(FATAL_ERROR "XPM image loader selected but libxpm dev files not found.")
+        message(FATAL_ERROR "XPM image loader selected but libxpm dev files not found.
+${HINT_IMG_LOADERS}")
     endif()
     LIST(APPEND icewm_img_libs ${libxpm_LDFLAGS})
 endif()
@@ -224,7 +259,8 @@ endif()
 if(CONFIG_LIBPNG)
     pkg_check_modules(libpng libpng)
     if(NOT libpng_FOUND)
-        message(FATAL_ERROR "PNG image loader selected but libpng dev files not found.")
+        message(FATAL_ERROR "PNG image loader selected but libpng dev files not found.
+${HINT_IMG_LOADERS}")
     endif()
     LIST(APPEND icewm_img_libs ${libpng_LDFLAGS})
 endif()
@@ -232,7 +268,8 @@ endif()
 if(CONFIG_LIBJPEG)
     pkg_check_modules(libjpeg libjpeg)
     if(NOT libjpeg_FOUND)
-        message(FATAL_ERROR "JPEG image loader selected but libjpeg dev files not found.")
+        message(FATAL_ERROR "JPEG image loader selected but libjpeg dev files not found.
+${HINT_IMG_LOADERS}")
     endif()
     LIST(APPEND icewm_img_libs ${libjpeg_LDFLAGS})
 endif()
@@ -274,6 +311,8 @@ if(CONFIG_XFREETYPE)
         message(WARNING "xft library (>=2.0) not found, disabling CONFIG_XFREETYPE")
         set(CONFIG_XFREETYPE off)
         set(CONFIG_COREFONTS on)
+    ELSE()
+        set(CONFIG_XFREETYPE_VALUE 2)
     ENDIF()
 else()
     set(CONFIG_COREFONTS on)
@@ -424,18 +463,24 @@ if(CONFIG_COREFONTS)
     list(APPEND ICE_COMMON_SRCS yfontcore.cc)
 endif()
 
-SET(ITK_SRCS ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc yscrollbar.cc ybutton.cc ylistbox.cc yinput.cc yicon.cc wmconfig.cc ref.cc
-    ydialog.cc ymsgbox.cc)
+SET(ITK_SRCS
+    ymenu.cc ylabel.cc yscrollview.cc ymenuitem.cc
+    yscrollbar.cc ybutton.cc ylistbox.cc yinput.cc
+    globit.cc yicon.cc wmconfig.cc wpixres.cc ref.cc
+    )
 
 SET(ICEWM_SRCS ${ICE_COMMON_SRCS} ${ITK_SRCS}
-    wmbutton.cc wmsession.cc wmwinlist.cc wmtaskbar.cc
-    wmwinmenu.cc wmdialog.cc wmabout.cc wmswitch.cc wmstatus.cc
-    wmoption.cc wmcontainer.cc wmclient.cc wmmgr.cc
-    wmapp.cc wmframe.cc wmminiicon.cc wmtitle.cc wpixres.cc
-    movesize.cc themes.cc decorate.cc browse.cc wmmenu.cc wmprog.cc atasks.cc
-    aworkspaces.cc amailbox.cc aclock.cc acpustatus.cc apppstatus.cc
-    aaddressbar.cc objbar.cc aapm.cc atray.cc ysmapp.cc yxtray.cc yurl.cc
-    globit.cc amemstatus.cc applet.cc)
+    ymsgbox.cc ydialog.cc yurl.cc wmsession.cc
+    wmwinlist.cc wmtaskbar.cc wmwinmenu.cc wmdialog.cc
+    wmabout.cc wmswitch.cc wmstatus.cc wmoption.cc
+    wmcontainer.cc wmclient.cc wmmgr.cc wmapp.cc
+    wmframe.cc wmbutton.cc wmminiicon.cc wmtitle.cc
+    movesize.cc themes.cc decorate.cc browse.cc
+    wmmenu.cc wmprog.cc atasks.cc aworkspaces.cc
+    amailbox.cc aclock.cc acpustatus.cc amemstatus.cc
+    applet.cc apppstatus.cc aaddressbar.cc objbar.cc
+    aapm.cc atray.cc ysmapp.cc yxtray.cc
+    )
 
 SET(MISC_SRCS misc.cc yarray.cc mstring.cc ref.cc)
 
@@ -509,6 +554,7 @@ foreach (_variableName
         DATADIR LIBDIR LOCDIR DOCDIR CFGDIR ICEHELPIDX
         CONFIG_IMLIB
         CONFIG_GDK_PIXBUF_XLIB
+        CONFIG_LIBRSVG
         CONFIG_XPM
         CONFIG_LIBJPEG
         CONFIG_LIBPNG

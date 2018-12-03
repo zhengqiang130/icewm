@@ -62,6 +62,9 @@ EdgeTrigger::EdgeTrigger(TaskBar *owner) {
     setStyle(wsOverrideRedirect | wsInputOnly);
     setPointer(YXApplication::leftPointer);
     setDND(true);
+    if (taskBarAutoHide) {
+        setTitle("IceEdge");
+    }
 
     fTaskBar = owner;
 
@@ -347,8 +350,8 @@ void TaskBar::initApplets() {
             fCollapseButton->setImage(taskbarCollapseImage);
             fCollapseButton->setActionListener(this);
             fCollapseButton->setToolTip("Hide taskbar");
+            fCollapseButton->setTitle("Collapse");
         }
-        fCollapseButton->setTitle("Collapse");
     } else
         fCollapseButton = 0;
 
@@ -467,11 +470,14 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
     wlist.append(nw);
     nw = LayoutInfo( fObjectBar, true, 1, true, 4, 0, true );
     wlist.append(nw);
-    nw = LayoutInfo( fWorkspaces, taskBarWorkspacesLeft, taskBarDoubleHeight && taskBarWorkspacesTop, true, 4, 4, true );
-    wlist.append(nw);
-
     nw = LayoutInfo( fCollapseButton, false, 0, true, 0, 2, true );
     wlist.append(nw);
+    nw = LayoutInfo( fWorkspaces, taskBarWorkspacesLeft,
+                     taskBarDoubleHeight && taskBarWorkspacesTop,
+                     taskBarShowWorkspaces && workspaceCount > 0,
+                     4, 4, true );
+    wlist.append(nw);
+
     nw = LayoutInfo( fClock, false, 1, false, 2, 2, false );
     wlist.append(nw);
     if (taskBarShowMailboxStatus) {
@@ -555,8 +561,7 @@ void TaskBar::updateLayout(unsigned &size_w, unsigned &size_h) {
     right[0] = w;
     right[1] = w;
     if (taskBarShowWindows && fTasks != 0) {
-        if (h[0] < YIcon::smallSize() + 8)
-            h[0] = YIcon::smallSize() + 8;
+        h[0] = max(h[0], max(YIcon::smallSize() + 8, fTasks->maxHeight()));
     }
 
     for (int i = 0; i < wcount; i++) {
@@ -626,9 +631,7 @@ void TaskBar::relayoutNow() {
     if (windowTrayPane())
         windowTrayPane()->relayoutNow();
     if (fNeedRelayout) {
-
         updateLocation();
-        fNeedRelayout = false;
     }
     if (taskPane())
         taskPane()->relayoutNow();
@@ -636,13 +639,15 @@ void TaskBar::relayoutNow() {
 
 void TaskBar::updateFullscreen(bool fullscreen) {
     fFullscreen = fullscreen;
-    if (fFullscreen || fIsHidden)
+    if ((fFullscreen || fIsHidden) && taskBarAutoHide)
         fEdgeTrigger->show();
     else
         fEdgeTrigger->hide();
 }
 
 void TaskBar::updateLocation() {
+    fNeedRelayout = false;
+
     int dx, dy;
     unsigned dw, dh;
     manager->getScreenGeometry(&dx, &dy, &dw, &dh, -1);
@@ -676,7 +681,9 @@ void TaskBar::updateLocation() {
 
     int by = taskBarAtTop ? dy : dy + dh - 1;
 
-    fEdgeTrigger->setGeometry(YRect(x, by, w, 1));
+    if (taskBarAutoHide) {
+        fEdgeTrigger->setGeometry(YRect(x, by, w, 1));
+    }
 
     int y = taskBarAtTop ? dy : dy + dh - h;
 
@@ -750,7 +757,12 @@ void TaskBar::handleCrossing(const XCrossingEvent &crossing) {
         if (crossing.type == EnterNotify /* && crossing.mode != NotifyNormal */) {
             fEdgeTrigger->stopHide();
         } else if (crossing.type == LeaveNotify /* && crossing.mode != NotifyNormal */) {
-            if (crossing.detail != NotifyInferior && !(crossing.detail == NotifyVirtual && crossing.mode == NotifyGrab) && !(crossing.detail == NotifyAncestor && crossing.mode != NotifyNormal)) {
+            if (crossing.detail != NotifyInferior &&
+                !(crossing.detail == NotifyVirtual &&
+                  crossing.mode == NotifyGrab) &&
+                !(crossing.detail == NotifyAncestor &&
+                  crossing.mode != NotifyNormal))
+            {
                 MSG(("taskbar hide: %d", crossing.detail));
                 fEdgeTrigger->startHide();
             } else {
@@ -769,7 +781,7 @@ void TaskBar::handleEndPopup(YPopupWindow *popup) {
     YWindow::handleEndPopup(popup);
 }
 
-void TaskBar::paint(Graphics &g, const YRect &/*r*/) {
+void TaskBar::paint(Graphics &g, const YRect& r) {
     if (taskbackPixbuf != null &&
         (fGradient == null ||
          fGradient->width() != width() ||
@@ -784,20 +796,22 @@ void TaskBar::paint(Graphics &g, const YRect &/*r*/) {
 
     // When TaskBarDoubleHeight=1 this draws the upper half.
     if (fGradient != null)
-        g.drawImage(fGradient, 0, 0, width(), height(), 0, 0);
+        g.drawImage(fGradient, r.x(), r.y(), r.width(), r.height(),
+                    r.x(), r.y());
     else
     if (taskbackPixmap != null)
-        g.fillPixmap(taskbackPixmap, 0, 0, width(), height());
+        g.fillPixmap(taskbackPixmap, r.x(), r.y(), r.width(), r.height(),
+                     r.x(), r.y());
     else {
         int y = taskBarAtTop ? 0 : 1;
-        g.fillRect(0, y, width(), height() - 1);
+        g.fillRect(r.x(), y + r.y(), r.width(), r.height() - 1);
         if (!taskBarAtTop) {
             y++;
             g.setColor(taskBarBg->brighter());
-            g.drawLine(0, 0, width(), 0);
+            g.drawLine(r.x(), 0, r.width(), 0);
         } else {
             g.setColor(taskBarBg->darker());
-            g.drawLine(0, height() - 1, width(), height() - 1);
+            g.drawLine(r.x(), height() - 1, r.width(), height() - 1);
         }
     }
 }
@@ -931,9 +945,11 @@ void TaskBar::showBar(bool visible) {
                             fIsCollapsed ? WinLayerAboveDock :
                             taskBarKeepBelow ? WinLayerBelow : WinLayerDock);
             getFrame()->setAllWorkspaces();
-            getFrame()->activate(true);
+            if (enableAddressBar && ::showAddressBar && taskBarDoubleHeight)
+                getFrame()->activate(true);
             updateLocation();
             parent()->setTitle("TaskBarFrame");
+            getFrame()->updateLayer();
         }
     }
 }
@@ -948,9 +964,11 @@ void TaskBar::handleCollapseButton() {
         fCollapseButton->setText(fIsCollapsed ? "<": ">");
         fCollapseButton->setImage(fIsCollapsed ? taskbarExpandImage : taskbarCollapseImage);
         fCollapseButton->setToolTip(fIsCollapsed ? "Show taskbar" : "Hide taskbar");
+        fCollapseButton->repaint();
     }
 
     relayout();
+    updateLocation();
 }
 
 void TaskBar::handlePopDown(YPopupWindow * /*popup*/) {
@@ -1024,4 +1042,27 @@ bool TaskBar::windowTrayRequestDock(Window w) {
     return false;
 }
 
+void TaskBar::switchToPrev()
+{
+    if (taskPane())
+        taskPane()->switchToPrev();
+}
+
+void TaskBar::switchToNext()
+{
+    if (taskPane())
+        taskPane()->switchToNext();
+}
+
+void TaskBar::movePrev()
+{
+    if (taskPane())
+        taskPane()->movePrev();
+}
+
+void TaskBar::moveNext()
+{
+    if (taskPane())
+        taskPane()->moveNext();
+}
 // vim: set sw=4 ts=4 et:

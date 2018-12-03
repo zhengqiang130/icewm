@@ -1,13 +1,13 @@
 # translation of icewm-1.2.22.po to slovak
 # Radovan Stas (RadOOne) <radoone@szm.sk>, 2004.
 # Zdenko Podobny <zdpo@mailbox.sk>, 2005.
-# Ferdinand Galko <galko.ferdinand@gmail.com>, 2017.
+# Ferdinand Galko <galko.ferdinand@gmail.com>, 2017, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: icewm-1.2.22\n"
 "Report-Msgid-Bugs-To: https://github.com/bbidulock/icewm/issues\n"
-"POT-Creation-Date: 2018-05-06 21:11+0200\n"
-"PO-Revision-Date: 2018-05-09 06:43+0000\n"
+"POT-Creation-Date: 2018-10-20 18:34+0200\n"
+"PO-Revision-Date: 2018-11-07 17:16+0000\n"
 "Last-Translator: Ferdinand Galko <galko.ferdinand@gmail.com>\n"
 "Language-Team: Slovak "
 "<https://l10n.opensuse.org/projects/icewm/icewm-1-4-branch/sk/>\n"
@@ -44,19 +44,27 @@ msgid "power:\t%s"
 msgstr "napájanie:\t%s"
 
 #: src/aclock.cc:173
-msgid "Clock"
-msgstr "Hodiny"
+msgid "CLOCK"
+msgstr "HODINY"
 
-#: src/aclock.cc:174 src/acpustatus.cc:818 src/amailbox.cc:907
-#: src/amemstatus.cc:286
+#: src/aclock.cc:177
+msgid "Date"
+msgstr "Dátum"
+
+#: src/aclock.cc:178 src/themes.cc:85
+msgid "Default"
+msgstr "Predvolené"
+
+#: src/aclock.cc:179 src/acpustatus.cc:862 src/amailbox.cc:938
+#: src/amemstatus.cc:264
 msgid "_Disable"
 msgstr "_Zakázať"
 
-#: src/aclock.cc:175
+#: src/aclock.cc:180
 msgid "_UTC"
 msgstr "_UTC"
 
-#: src/acpustatus.cc:236
+#: src/acpustatus.cc:233
 #, c-format
 msgid ""
 "stat:\tuser = %llu, nice = %llu, sys = %llu, idle = %llu, iowait = %llu, "
@@ -65,7 +73,7 @@ msgstr ""
 "stat:\tuser = %llu, nice = %llu, sys = %llu, idle = %llu, iowait = %llu, "
 "intr = %llu, softirq = %llu, steal = %llu\n"
 
-#: src/acpustatus.cc:241
+#: src/acpustatus.cc:238
 #, c-format
 msgid ""
 "bars:\tuser = %llu, nice = %llu, sys = %llu, iowait = %llu, intr = %llu, "
@@ -74,12 +82,12 @@ msgstr ""
 "bars:\tuser = %llu, nice = %llu, sys = %llu, iowait = %llu, intr = %llu, "
 "softirq = %llu, steal = %llu (h = %i)\n"
 
-#: src/acpustatus.cc:306
+#: src/acpustatus.cc:303
 #, c-format
 msgid "CPU %s Load: %3.2f %3.2f %3.2f, %u"
 msgstr "CPU %s Záťaž: %3.2f %3.2f %3.2f, %u"
 
-#: src/acpustatus.cc:312
+#: src/acpustatus.cc:309
 #, c-format
 msgid ""
 "\n"
@@ -88,7 +96,7 @@ msgstr ""
 "\n"
 "Ram (voľné): %5.3f (%.3f) G"
 
-#: src/acpustatus.cc:317
+#: src/acpustatus.cc:314
 #, c-format
 msgid ""
 "\n"
@@ -97,7 +105,7 @@ msgstr ""
 "\n"
 "Swap (voľné): %.3f (%.3f) G"
 
-#: src/acpustatus.cc:323
+#: src/acpustatus.cc:320
 #, c-format
 msgid ""
 "\n"
@@ -106,7 +114,7 @@ msgstr ""
 "\n"
 "ACPI Teplot: "
 
-#: src/acpustatus.cc:342
+#: src/acpustatus.cc:339 src/acpustatus.cc:379
 #, c-format
 msgid ""
 "\n"
@@ -115,35 +123,44 @@ msgstr ""
 "\n"
 "CPU Frek: %.3fGHz"
 
-#: src/acpustatus.cc:363 src/acpustatus.cc:814
+#: src/acpustatus.cc:356 src/acpustatus.cc:858
 msgid "CPU"
 msgstr "CPU"
 
-#: src/acpustatus.cc:363
+#: src/acpustatus.cc:356
 msgid "Load: "
 msgstr "Zaťaženie: "
 
+#: src/acpustatus.cc:371
+#, c-format
+msgid ""
+"\n"
+"Ram (user): %5.3f (%.3f) G"
+msgstr ""
+"\n"
+"Ram (používateľ): %5.3f (%.3f) G"
+
 #. TRANSLATORS: Please translate the string "C" into "Celsius Temperature" in your language.
 #. TRANSLATORS: Please make sure the translated string could be shown in your non-utf8 locale.
-#: src/acpustatus.cc:434
+#: src/acpustatus.cc:438
 msgid "°C"
 msgstr "°C"
 
-#: src/acpustatus.cc:728
+#: src/acpustatus.cc:770
 #, c-format
-msgid "%s: %llu %llu %llu %llu %llu %llu %llu %llu"
-msgstr "%s: %llu %llu %llu %llu %llu %llu %llu %llu"
+msgid "CPU: %llu %llu %llu %llu %llu %llu %llu %llu"
+msgstr "CPU: %llu %llu %llu %llu %llu %llu %llu %llu"
 
-#: src/acpustatus.cc:815
+#: src/acpustatus.cc:859
 #, c-format
 msgid "CPU%d"
 msgstr "CPU%d"
 
-#: src/acpustatus.cc:820
+#: src/acpustatus.cc:864
 msgid "_Combine"
 msgstr "_Kombinovať"
 
-#: src/acpustatus.cc:822
+#: src/acpustatus.cc:866
 msgid "_Separate"
 msgstr "_Oddeliť"
 
@@ -187,80 +204,92 @@ msgstr "Zlyhalo vykonanie %s"
 msgid "Write to socket failed: %s"
 msgstr "Zápis na soket zlyhal: %s"
 
-#: src/amailbox.cc:678
+#: src/amailbox.cc:680
 #, c-format
 msgid "Using MailBox \"%s\"\n"
 msgstr "Používam MailBox: \"%s\"\n"
 
-#: src/amailbox.cc:785
+#: src/amailbox.cc:794
+msgid "Suspended"
+msgstr "Pozastavené"
+
+#: src/amailbox.cc:798
 msgid "Error checking mailbox."
 msgstr "Chyba overenia stavu mailboxu."
 
-#: src/amailbox.cc:792
+#: src/amailbox.cc:805
 #, c-format
 msgid "%ld mail message, %ld unread."
 msgstr "%ld poštová správa, %ld neprečítaná."
 
-#: src/amailbox.cc:793
+#: src/amailbox.cc:806
 #, c-format
 msgid "%ld mail messages, %ld unread."
 msgstr "%ld poštových správ, %ld neprečítaných."
 
-#: src/amailbox.cc:799
+#: src/amailbox.cc:812
 #, c-format
 msgid "%ld mail message."
 msgstr "%ld poštová správa."
 
-#: src/amailbox.cc:800
+#: src/amailbox.cc:813
 #, c-format
 msgid "%ld mail messages."
 msgstr "%ld poštových správ."
 
-#: src/amailbox.cc:906
+#: src/amailbox.cc:936
 msgid "MAIL"
 msgstr "MAIL"
 
-#: src/amemstatus.cc:166
+#: src/amailbox.cc:937
+msgid "_Check"
+msgstr "_Skontrolovať"
+
+#: src/amailbox.cc:939
+msgid "_Suspend"
+msgstr "_Pozastaviť"
+
+#: src/amemstatus.cc:145
 msgid "GB"
 msgstr "GB"
 
-#: src/amemstatus.cc:170
+#: src/amemstatus.cc:149
 msgid "MB"
 msgstr "MB"
 
-#: src/amemstatus.cc:174
+#: src/amemstatus.cc:153
 msgid "kB"
 msgstr "kB"
 
-#: src/amemstatus.cc:178
+#: src/amemstatus.cc:157
 msgid "bytes"
 msgstr "bajtov"
 
-#: src/amemstatus.cc:198
+#: src/amemstatus.cc:177
 msgid "Memory Total: "
 msgstr "Celková pamäť: "
 
-#: src/amemstatus.cc:199
+#: src/amemstatus.cc:178
 msgid "Free: "
 msgstr "Voľná: "
 
-#: src/amemstatus.cc:200
+#: src/amemstatus.cc:179
 msgid "Cached: "
 msgstr "Vyrovnávacia pamäť: "
 
-#: src/amemstatus.cc:201
+#: src/amemstatus.cc:180
 msgid "Buffers: "
 msgstr "Zásobníky: "
 
-#: src/amemstatus.cc:202
+#: src/amemstatus.cc:181
 msgid "User: "
 msgstr "Používateľ: "
 
-#: src/amemstatus.cc:285
+#: src/amemstatus.cc:263
 msgid "MEM"
 msgstr "MEM"
 
-#: src/apppstatus.cc:202
+#: src/apppstatus.cc:203
 #, c-format
 msgid ""
 "Interface %s:\n"
@@ -275,7 +304,7 @@ msgstr ""
 "  Prenesené (dnu/von):\t%lli %s/%lli %s\n"
 "  Celková doba pripojenia:\t%ld:%02ld:%02ld%s%s"
 
-#: src/apppstatus.cc:214
+#: src/apppstatus.cc:215
 msgid ""
 "\n"
 "  Caller id:\t"
@@ -283,190 +312,130 @@ msgstr ""
 "\n"
 "  Id volajúceho:\t"
 
-#: src/apppstatus.cc:731
+#: src/apppstatus.cc:717
 msgid "NET"
 msgstr "NET"
 
-#: src/aworkspaces.cc:294 src/wmstatus.cc:162
+#: src/aworkspaces.cc:294 src/wmstatus.cc:163
 msgid "Workspace: "
 msgstr "Pracovná plocha: "
 
-#: src/fdomenu.cc:79
-msgid "Accessibility"
-msgstr "Dostupnosť"
-
-#: src/fdomenu.cc:80
-msgid "Settings"
-msgstr "Nastavenia"
-
-#: src/fdomenu.cc:81
-msgid "Screensavers"
-msgstr "Šetriče obrazovky"
-
-#: src/fdomenu.cc:82
-msgid "Accessories"
-msgstr "Príslušenstvo"
-
-#: src/fdomenu.cc:83
-msgid "Development"
-msgstr "Vývoj"
-
-#: src/fdomenu.cc:84
-msgid "Education"
-msgstr "Vzdelávanie"
-
-#: src/fdomenu.cc:85
-msgid "Games"
-msgstr "Hry"
-
-#: src/fdomenu.cc:86
-msgid "Graphics"
-msgstr "Grafika"
-
-#: src/fdomenu.cc:87
-msgid "Multimedia"
-msgstr "Multimédiá"
-
-#: src/fdomenu.cc:88
-msgid "Network"
-msgstr "Sieť"
-
-#: src/fdomenu.cc:89
-msgid "Office"
-msgstr "Kancelária"
-
-#: src/fdomenu.cc:90
-msgid "System"
-msgstr "Systém"
-
-#: src/fdomenu.cc:91
-msgid "WINE"
-msgstr "WINE"
-
-#: src/fdomenu.cc:92
-msgid "Editors"
-msgstr "Editory"
-
-#: src/fdomenu.cc:93
-msgid "Other"
-msgstr "Iné"
-
-#: src/icehelp.cc:1199
+#: src/icehelp.cc:1201
 msgid "Back"
 msgstr "Späť"
 
-#: src/icehelp.cc:1199
+#: src/icehelp.cc:1201
 msgid "Alt+Left"
 msgstr "Alt+Vľavo"
 
-#: src/icehelp.cc:1201
+#: src/icehelp.cc:1203
 msgid "Forward"
 msgstr "Dopredu"
 
-#: src/icehelp.cc:1201
+#: src/icehelp.cc:1203
 msgid "Alt+Right"
 msgstr "Alt+Vpravo"
 
-#: src/icehelp.cc:1204
+#: src/icehelp.cc:1206
 msgid "Previous"
 msgstr "Predchádzajúce"
 
-#: src/icehelp.cc:1205
+#: src/icehelp.cc:1207
 msgid "Next"
 msgstr "Nasledujúce"
 
-#: src/icehelp.cc:1207
+#: src/icehelp.cc:1209
 msgid "Contents"
 msgstr "Obsah"
 
-#: src/icehelp.cc:1208
+#: src/icehelp.cc:1210
 msgid "Index"
 msgstr "Index"
 
-#: src/icehelp.cc:1211 src/icesame.cc:62 src/iceview.cc:74 src/wmtitle.cc:99
+#: src/icehelp.cc:1213 src/icesame.cc:62 src/iceview.cc:74 src/wmtitle.cc:99
 msgid "Close"
 msgstr "Zavrieť"
 
-#: src/icehelp.cc:1211 src/icesame.cc:62 src/iceview.cc:74
+#: src/icehelp.cc:1213 src/icesame.cc:62 src/iceview.cc:74
 msgid "Ctrl+Q"
 msgstr "Ctrl+Q"
 
-#: src/icehelp.cc:1216
+#: src/icehelp.cc:1218
 msgid "Icewm(1)"
 msgstr "Icewm(1)"
 
-#: src/icehelp.cc:1218
+#: src/icehelp.cc:1220
 msgid "Icewmbg(1)"
 msgstr "Icewmbg(1)"
 
-#: src/icehelp.cc:1220
+#: src/icehelp.cc:1222
 msgid "Icesound(1)"
 msgstr "Icesound(1)"
 
-#: src/icehelp.cc:1222
+#: src/icehelp.cc:1224
 msgid "FAQ"
 msgstr "FAQ"
 
-#: src/icehelp.cc:1224
+#: src/icehelp.cc:1226
 msgid "Manual"
 msgstr "Ručne"
 
-#: src/icehelp.cc:1226
+#: src/icehelp.cc:1228
 msgid "Support"
 msgstr "Podpora"
 
-#: src/icehelp.cc:1228
+#: src/icehelp.cc:1230
 msgid "Theme Howto"
 msgstr "Howto témy"
 
-#: src/icehelp.cc:1230
+#: src/icehelp.cc:1232
 msgid "Website"
 msgstr "Webové stránky"
 
-#: src/icehelp.cc:1232
+#: src/icehelp.cc:1234
 msgid "Github"
 msgstr "Github"
 
-#: src/icehelp.cc:1934
+#: src/icehelp.cc:1936
 msgid "Unsupported protocol."
 msgstr "Nepodporovaný protokol."
 
-#: src/icehelp.cc:1959
+#: src/icehelp.cc:1961
 #, c-format
 msgid "Invalid path: %s\n"
 msgstr "Neplatná cesta: %s\n"
 
-#: src/icehelp.cc:1982
+#: src/icehelp.cc:1984
 msgid "Path does not refer to a file."
 msgstr "Cesta neodkazuje na súbor."
 
-#: src/icehelp.cc:1987
+#: src/icehelp.cc:1989
 msgid "Failed to open file for reading."
 msgstr "Zlyhalo otvorenie súboru na čítanie."
 
-#: src/icehelp.cc:2016
+#: src/icehelp.cc:2018
 msgid "Failed to create a temporary file"
 msgstr "Zlyhalo vytvorenie dočasného súboru"
 
-#: src/icehelp.cc:2108
+#: src/icehelp.cc:2110
 #, c-format
 msgid "Failed to execute system(%s) (%d)"
 msgstr "Zlyhalo vykonanie system(%s) (%d)"
 
-#: src/icehelp.cc:2131
+#: src/icehelp.cc:2133
 #, c-format
 msgid "Failed to decompress %s"
 msgstr "Zlyhalo rozbalenie %s"
 
-#: src/icehelp.cc:2139
+#: src/icehelp.cc:2141
 msgid "Could not locate curl or wget in PATH"
 msgstr "Nebolo možné nájsť curl alebo wget v PATH"
 
-#: src/icehelp.cc:2143
+#: src/icehelp.cc:2145
 msgid "Unsafe characters in URL"
 msgstr "Nebezpečné znaky v URL"
 
-#: src/icehelp.cc:2180
+#: src/icehelp.cc:2182
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS] [ FILENAME | URL ]\n"
@@ -538,7 +507,7 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/icehelp.cc:2257
+#: src/icehelp.cc:2259
 #, c-format
 msgid "Ignoring option '%s'"
 msgstr "Ignorovanie voľby '%s'"
@@ -751,7 +720,7 @@ msgstr "Neplatná hodnota: `%s'."
 msgid "No actions specified."
 msgstr "Nebola zadaná žiadna akcia."
 
-#: src/icesh.cc:760 src/icesound.cc:945 src/icewmhint.cc:36 src/yxapp.cc:931
+#: src/icesh.cc:760 src/icesound.cc:945 src/icewmhint.cc:36 src/yxapp.cc:925
 #, c-format
 msgid "Can't open display: %s. X must be running and $DISPLAY set."
 msgstr ""
@@ -886,7 +855,7 @@ msgstr "Nebolo možné nastaviť formát OSS"
 msgid "Can't connect to ESound daemon: %s"
 msgstr "Nedá sa spojiť s ESound démonom: %s"
 
-#: src/icesound.cc:494 src/icewmhint.cc:38 src/yxapp.cc:932
+#: src/icesound.cc:494 src/icewmhint.cc:38 src/yxapp.cc:926
 msgid "<none>"
 msgstr "<žiadny>"
 
@@ -1125,12 +1094,12 @@ msgstr "Zalamovať riadky"
 msgid "Ctrl+W"
 msgstr "Ctrl+W"
 
-#: src/icewmbg.cc:77
+#: src/icewmbg.cc:78
 #, c-format
 msgid "Failed to load image '%s'."
 msgstr "Zlyhalo načítanie obrázka: '%s'."
 
-#: src/icewmbg.cc:700
+#: src/icewmbg.cc:843
 msgid ""
 "Usage: icewmbg [OPTIONS]\n"
 "Where multiple values can be given they are separated by commas.\n"
@@ -1140,6 +1109,7 @@ msgid ""
 "  -p, --replace        Replace an existing icewmbg.\n"
 "  -q, --quit           Tell the running icewmbg to quit.\n"
 "  -r, --restart        Tell the running icewmbg to restart itself.\n"
+"  -u, --shuffle        Shuffle/reshuffle the list of background images.\n"
 "\n"
 "  -c, --config=FILE    Load preferences from FILE.\n"
 "  -t, --theme=NAME     Load the theme with name NAME.\n"
@@ -1153,6 +1123,7 @@ msgid ""
 "  -e, --center=0/1     Disable/Enable centering background.\n"
 "  -a, --scaled=0/1     Disable/Enable scaling background.\n"
 "  -m, --multi=0/1      Disable/Enable multihead background.\n"
+"  -y, --cycle=SECONDS  Cycle backgrounds every SECONDS.\n"
 "\n"
 "  --display=NAME       Use NAME to connect to the X server.\n"
 "  --sync               Synchronize communication with X11 server.\n"
@@ -1165,10 +1136,12 @@ msgid ""
 " DesktopBackgroundScaled  - Display desktop background scaled\n"
 " DesktopBackgroundColor   - Desktop background color(s)\n"
 " DesktopBackgroundImage   - Desktop background image(s)\n"
+" ShuffleBackgroundImages  - Shuffle the list of background images\n"
 " SupportSemitransparency  - Support for semitransparent terminals\n"
 " DesktopTransparencyColor - Semitransparency background color(s)\n"
 " DesktopTransparencyImage - Semitransparency background image(s)\n"
 " DesktopBackgroundMultihead - One background over all monitors\n"
+" CycleBackgroundsPeriod   - Seconds between cycling over backgrounds\n"
 "\n"
 " center:0 scaled:0 = tiled\n"
 " center:1 scaled:0 = centered\n"
@@ -1184,6 +1157,7 @@ msgstr ""
 "  -p, --replace        Nahradí existujúci icewmbg.\n"
 "  -q, --quit          Oznámi spustenému icewmbg, aby sa ukončil.\n"
 "  -r, --restart         Oznámi spustenému icewmbg, aby sa reštartoval.\n"
+"  -u, --shuffle        Zamieša/znovu zamieša zoznam obrázkov pozadia.\n"
 "\n"
 "  -c, --config=SÚBOR   Načíta predvoľby zo SÚBORU.\n"
 "  -t, --theme=NÁZOV    Načíta tému s názvom NÁZOV.\n"
@@ -1197,6 +1171,7 @@ msgstr ""
 "  -e, --center=0/1     Zakáže/Povolí centrovanie pozadia.\n"
 "  -a, --scaled=0/1     Zakáže/Povolí škálované pozadie.\n"
 "  -m, --multi=0/1      Zakáže/Povolí viacstranné pozadie.\n"
+"  -y, --cycle=SEKUNDY  Cykluje pozadie každý počet SEKÚND.\n"
 "\n"
 "  --display=NÁZOV      Použite NÁZOV pre pripojenie k X serveru.\n"
 "  --sync              Synchronizujte komunikáciu s X11 serverom.\n"
@@ -1209,10 +1184,12 @@ msgstr ""
 " DesktopBackgroundScaled  - Zobrazí pozadie plochy škálované\n"
 " DesktopBackgroundColor   - Farba(y) pozadia plochy\n"
 " DesktopBackgroundImage   - Obrázok(y) pozadia plochy\n"
+" ShuffleBackgroundImages  - Zamieša zoznam obrázkov pozadia\n"
 " SupportSemitransparency  - Podpora polopriehľadných terminálov\n"
 " DesktopTransparencyColor - Polopriehľadné farba(y) pozadia\n"
 " DesktopTransparencyImage - Polopriehľadné obrázok(y) pozadia\n"
 " DesktopBackgroundMultihead - Jedno pozadie cez všetky monitory\n"
+" CycleBackgroundsPeriod   - Sekundy medzi cyklom pozadí\n"
 "\n"
 " center:0 scaled:0 = dlaždice\n"
 " center:1 scaled:0 = centrovanie\n"
@@ -1220,7 +1197,7 @@ msgstr ""
 " center:0 scaled:1 = vyplní oba rozmery a zachová pomer strán\n"
 "\n"
 
-#: src/icewmbg.cc:891
+#: src/icewmbg.cc:1057
 msgid "Cannot start, because another icewmbg is still running."
 msgstr "Nebolo možné spustiť, pretože iný icewmbg stále beží."
 
@@ -1261,10 +1238,6 @@ msgstr ""
 msgid "Unknown direction in move/resize request: %d"
 msgstr "Neznámy smer pri požiadavke posun/zmena veľkosti: %d"
 
-#: src/themes.cc:85
-msgid "Default"
-msgstr "Predvolené"
-
 #: src/wmabout.cc:26 src/wmabout.cc:28
 msgid "(C)"
 msgstr "(C)"
@@ -1293,169 +1266,170 @@ msgstr "Jazyk:"
 msgid "icewm - About"
 msgstr "icewm - O Aplikácii"
 
-#: src/wmapp.cc:93
+#: src/wmapp.cc:90
 msgid "A window manager is already running, use --replace to replace it"
 msgstr "Už je spustený správca okien, ak ho chcete nahradiť, použite --replace"
 
-#: src/wmapp.cc:111
+#: src/wmapp.cc:108
 #, c-format
 msgid "Failed to become the owner of the %s selection"
 msgstr "Nepodarilo sa stať sa vlastníkom výberu %s"
 
-#: src/wmapp.cc:115
+#: src/wmapp.cc:112
 msgid "Waiting to replace the old window manager"
 msgstr "Čakanie sa nahradenie starého správcu okien"
 
-#: src/wmapp.cc:120
+#: src/wmapp.cc:117
 msgid "done."
 msgstr "hotovo."
 
-#: src/wmapp.cc:406
+#: src/wmapp.cc:403
 msgid "Unable to get current font path."
 msgstr "Aktuálnu cestu k písmam nemôžem získať."
 
-#: src/wmapp.cc:433
+#: src/wmapp.cc:430
 msgid "Unexpected format of ICEWM_FONT_PATH property"
 msgstr "Neočakávaný formát položky ICEWM_FONT_PATH"
 
-#: src/wmapp.cc:511
+#: src/wmapp.cc:508
 msgid "_Logout"
 msgstr "Odh_lásenie"
 
-#: src/wmapp.cc:512
+#: src/wmapp.cc:509
 msgid "_Cancel logout"
 msgstr "_Zrušiť odhlásenie"
 
-#: src/wmapp.cc:517
+#: src/wmapp.cc:514
 msgid "Lock _Workstation"
 msgstr "Uzamknúť pracovnú _stanicu"
 
-#: src/wmapp.cc:519 src/wmdialog.cc:77
+#: src/wmapp.cc:516 src/wmdialog.cc:78
 msgid "Re_boot"
 msgstr "Reštar_tovať"
 
 #
-#: src/wmapp.cc:521 src/wmdialog.cc:78
+#: src/wmapp.cc:518 src/wmdialog.cc:79
 msgid "Shut_down"
 msgstr "_Vypnúť počítač"
 
-#: src/wmapp.cc:523 src/wmdialog.cc:74
-msgid "_Suspend"
-msgstr "_Pozastaviť"
+#. TRANSLATORS: This means "energy saving mode" or "suspended system". Not "interrupt". Not "hibernate".
+#: src/wmapp.cc:520 src/wmdialog.cc:75
+msgid "_Sleep mode"
+msgstr "_Režim spánku"
 
-#: src/wmapp.cc:528
+#: src/wmapp.cc:525
 msgid "Restart _Icewm"
 msgstr "Reštartovať _Icewm"
 
-#: src/wmapp.cc:530
+#: src/wmapp.cc:527
 msgid "Restart _Xterm"
 msgstr "Reštartovať _Xterm"
 
-#: src/wmapp.cc:543
+#: src/wmapp.cc:540
 msgid "_Menu"
 msgstr "_Menu"
 
-#: src/wmapp.cc:544
+#: src/wmapp.cc:541
 msgid "_Above Dock"
 msgstr "_Nad dok"
 
-#: src/wmapp.cc:545
+#: src/wmapp.cc:542
 msgid "_Dock"
 msgstr "_Dok"
 
-#: src/wmapp.cc:546
+#: src/wmapp.cc:543
 msgid "_OnTop"
 msgstr "H_ore"
 
-#: src/wmapp.cc:547
+#: src/wmapp.cc:544
 msgid "_Normal"
 msgstr "_Normálne"
 
-#: src/wmapp.cc:548
+#: src/wmapp.cc:545
 msgid "_Below"
 msgstr "_Dole"
 
-#: src/wmapp.cc:549
+#: src/wmapp.cc:546
 msgid "D_esktop"
 msgstr "_Plocha"
 
-#: src/wmapp.cc:574
+#: src/wmapp.cc:571 src/wmwinlist.cc:305
 msgid "_Restore"
 msgstr "O_bnoviť"
 
-#: src/wmapp.cc:576
+#: src/wmapp.cc:573
 msgid "_Move"
 msgstr "_Presunúť"
 
-#: src/wmapp.cc:578
+#: src/wmapp.cc:575
 msgid "_Size"
 msgstr "_Veľkosť"
 
-#: src/wmapp.cc:580
+#: src/wmapp.cc:577 src/wmwinlist.cc:306
 msgid "Mi_nimize"
 msgstr "_Minimalizovať"
 
-#: src/wmapp.cc:582
+#: src/wmapp.cc:579 src/wmwinlist.cc:307
 msgid "Ma_ximize"
 msgstr "Ma_ximalizovať"
 
-#: src/wmapp.cc:584
+#: src/wmapp.cc:581 src/wmwinlist.cc:308
 msgid "_Fullscreen"
 msgstr "_Celá obrazovka"
 
-#: src/wmapp.cc:587 src/wmwinlist.cc:301
+#: src/wmapp.cc:584 src/wmwinlist.cc:310
 msgid "_Hide"
 msgstr "_Schovať"
 
-#: src/wmapp.cc:589
+#: src/wmapp.cc:586 src/wmwinlist.cc:311
 msgid "Roll_up"
 msgstr "Zrol_ovať"
 
-#: src/wmapp.cc:596
+#: src/wmapp.cc:593
 msgid "R_aise"
 msgstr "Zvýš_iť"
 
-#: src/wmapp.cc:598
+#: src/wmapp.cc:595 src/wmwinlist.cc:313
 msgid "_Lower"
 msgstr "_Znížiť"
 
-#: src/wmapp.cc:600
+#: src/wmapp.cc:597
 msgid "La_yer"
 msgstr "Vrs_tva"
 
-#: src/wmapp.cc:604 src/wmwinlist.cc:303
+#: src/wmapp.cc:601 src/wmwinlist.cc:315
 msgid "Move _To"
 msgstr "_Presunúť na"
 
-#: src/wmapp.cc:605
+#: src/wmapp.cc:602 src/wmwinlist.cc:316
 msgid "Occupy _All"
 msgstr "N_a všetky plochy"
 
-#: src/wmapp.cc:611
+#: src/wmapp.cc:608
 msgid "Limit _Workarea"
 msgstr "Obmedziť pracovnú ob_lasť"
 
-#: src/wmapp.cc:615
+#: src/wmapp.cc:612 src/wmwinlist.cc:317
 msgid "Tray _icon"
 msgstr "Dokuj _ikonu"
 
-#: src/wmapp.cc:620 src/wmwinlist.cc:290 src/wmwinlist.cc:314
+#: src/wmapp.cc:617 src/wmwinlist.cc:295 src/wmwinlist.cc:328
 msgid "_Close"
 msgstr "_Zavrieť"
 
-#: src/wmapp.cc:622 src/wmwinlist.cc:292
+#: src/wmapp.cc:619 src/wmwinlist.cc:297
 msgid "_Kill Client"
 msgstr "Zabiť _klienta"
 
-#: src/wmapp.cc:625 src/wmdialog.cc:79 src/wmwinmenu.cc:131
+#: src/wmapp.cc:622 src/wmdialog.cc:80 src/wmwinmenu.cc:131
 msgid "_Window list"
 msgstr "Zoznam _okien"
 
-#: src/wmapp.cc:639
+#: src/wmapp.cc:636
 msgid "Another window manager already running, exiting..."
 msgstr "Iný window manažér beží, končím..."
 
-#: src/wmapp.cc:724
+#: src/wmapp.cc:721
 #, c-format
 msgid ""
 "Could not restart: %s\n"
@@ -1464,18 +1438,18 @@ msgstr ""
 "Nemôžem reštartovať: %s\n"
 "Vedie $PATH k %s?"
 
-#: src/wmapp.cc:805
+#: src/wmapp.cc:842
 msgid "Kill IceWM, replace with Xterm"
 msgstr "Zabiť IceWM, nahradiť s Xterm"
 
-#: src/wmapp.cc:1319
+#: src/wmapp.cc:1382
 msgid ""
 "  --client-id=ID      Client id to use when contacting session manager.\n"
 msgstr ""
 "  --client-id=ID      ID klienta, ktoré bude použité pri kontaktovaní "
 "správcu sedenia.\n"
 
-#: src/wmapp.cc:1325
+#: src/wmapp.cc:1388
 msgid ""
 "\n"
 "  --debug             Print generic debug messages.\n"
@@ -1485,7 +1459,7 @@ msgstr ""
 "  --debug             Vypíše všeobecné ladiace správy.\n"
 "  --debug-z           Vypíše ladiace správy týkajúce naskladania okien.\n"
 
-#: src/wmapp.cc:1333
+#: src/wmapp.cc:1396
 msgid ""
 "\n"
 "  -c, --config=FILE   Load preferences from FILE.\n"
@@ -1497,7 +1471,7 @@ msgstr ""
 "  -t, --theme=SÚBOR    Načíta tému zo SÚBOR-u.\n"
 "  --postpreferences   Vypíše predvoľby po spracovaní všetkého.\n"
 
-#: src/wmapp.cc:1338
+#: src/wmapp.cc:1401
 #, c-format
 msgid ""
 "Usage: %s [OPTIONS]\n"
@@ -1558,26 +1532,26 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: src/wmapp.cc:1399
+#: src/wmapp.cc:1462
 #, c-format
 msgid "%s configuration directories:\n"
 msgstr "%s konfiguračné adresáre:\n"
 
-#: src/wmapp.cc:1481
+#: src/wmapp.cc:1547
 #, c-format
 msgid "%s configured options:%s\n"
 msgstr "%s nakonfigurované voľby: %s\n"
 
-#: src/wmapp.cc:1528
+#: src/wmapp.cc:1599
 #, c-format
 msgid "Unrecognized option '%s'."
 msgstr "Nerozpoznaná voľba: '%s'."
 
-#: src/wmapp.cc:1560
+#: src/wmapp.cc:1631
 msgid "Confirm Logout"
 msgstr "Potvrdiť odhlásenie"
 
-#: src/wmapp.cc:1561
+#: src/wmapp.cc:1632
 msgid ""
 "Logout will close all active applications.\n"
 "Proceed?"
@@ -1600,12 +1574,12 @@ msgstr "Neznáma hodnota '%s' pre voľbu '%s'."
 msgid "Unable to create directory %s"
 msgstr "Nepodarilo sa vytvoriť adresár %s"
 
-#: src/wmconfig.cc:138
+#: src/wmconfig.cc:138 src/wmprog.cc:558 src/wmprog.cc:680 src/wmprog.cc:684
 #, c-format
 msgid "Unable to write to %s"
 msgstr "Nie je možné zapísať do %s"
 
-#: src/wmconfig.cc:165
+#: src/wmconfig.cc:165 src/wmprog.cc:688
 #, c-format
 msgid "Unable to rename %s to %s"
 msgstr "Nepodarilo sa premenovať %s na %s"
@@ -1614,29 +1588,29 @@ msgstr "Nepodarilo sa premenovať %s na %s"
 msgid "Loc_k Workstation"
 msgstr "Zamknúť pracovnú _stanicu"
 
-#: src/wmdialog.cc:75 src/ymsgbox.cc:44
+#: src/wmdialog.cc:76 src/ymsgbox.cc:44
 msgid "_Cancel"
 msgstr "_Zrušiť"
 
-#: src/wmdialog.cc:76 src/wmprog.cc:792 src/wmprog.cc:794 src/wmtaskbar.cc:280
-#: src/wmtaskbar.cc:282
+#: src/wmdialog.cc:77 src/wmprog.cc:838 src/wmprog.cc:840 src/wmtaskbar.cc:292
+#: src/wmtaskbar.cc:294
 msgid "_Logout..."
 msgstr "Odh_lásenie..."
 
-#: src/wmdialog.cc:80
+#: src/wmdialog.cc:81
 msgid "_Restart icewm"
 msgstr "_Reštartovať icewm"
 
-#: src/wmdialog.cc:81 src/wmprog.cc:753 src/wmtaskbar.cc:273
-#: src/wmtaskbar.cc:276
+#: src/wmdialog.cc:82 src/wmprog.cc:799 src/wmtaskbar.cc:285
+#: src/wmtaskbar.cc:288
 msgid "_About"
 msgstr "O _aplikacii"
 
-#: src/wmframe.cc:1406
+#: src/wmframe.cc:1409
 msgid "Kill Client: "
 msgstr "Zabiť klienta: "
 
-#: src/wmframe.cc:1413
+#: src/wmframe.cc:1416
 msgid ""
 "WARNING! All unsaved changes will be lost when\n"
 "this client is killed. Do you wish to proceed?"
@@ -1644,19 +1618,19 @@ msgstr ""
 "VAROVANIE! Ak bude tento klient zabitý, budú\n"
 "všetky neuložené dáta stratené. Chcete pokračovať?"
 
-#: src/wmframe.cc:2996
+#: src/wmframe.cc:3006
 msgid "Restore"
 msgstr "Obnoviť"
 
-#: src/wmframe.cc:2999 src/wmtitle.cc:69
+#: src/wmframe.cc:3009 src/wmtitle.cc:69
 msgid "Maximize"
 msgstr "Maximalizovať"
 
-#: src/wmframe.cc:3029
+#: src/wmframe.cc:3039
 msgid "Rolldown"
 msgstr "Rozbaliť"
 
-#: src/wmframe.cc:3031 src/wmtitle.cc:127
+#: src/wmframe.cc:3041 src/wmtitle.cc:127
 msgid "Rollup"
 msgstr "Z_rolovať"
 
@@ -1670,75 +1644,79 @@ msgstr "Neznáma voľba okna: %s"
 msgid "Syntax error in window options on line %d of %s"
 msgstr "Syntaktická chyba vo voľbách okna na riadku %d z %s"
 
-#: src/wmprog.cc:377
+#: src/wmprog.cc:386
 msgid "_Click to focus"
 msgstr "Aktivovať _kliknutím"
 
-#: src/wmprog.cc:378
+#: src/wmprog.cc:387
 msgid "_Explicit focus"
 msgstr "_Vybrať kliknutím"
 
-#: src/wmprog.cc:379
+#: src/wmprog.cc:388
 msgid "_Sloppy mouse focus"
 msgstr "Aktivovať _presunom myši"
 
-#: src/wmprog.cc:380
+#: src/wmprog.cc:389
 msgid "S_trict mouse focus"
 msgstr "S_triktné aktivovanie myšou"
 
-#: src/wmprog.cc:381
+#: src/wmprog.cc:390
 msgid "_Quiet sloppy focus"
 msgstr "Aktivovať pokojným _presunom"
 
-#: src/wmprog.cc:382
+#: src/wmprog.cc:391
 msgid "Custo_m"
 msgstr "Vlast_né"
 
-#: src/wmprog.cc:665
+#: src/wmprog.cc:478
+msgid "Save Modifications"
+msgstr "Uložiť zmeny"
+
+#: src/wmprog.cc:711
 msgid "_Manual"
 msgstr "_Ručne"
 
-#: src/wmprog.cc:666
+#: src/wmprog.cc:712
 msgid "_Icewm(1)"
 msgstr "_Icewm(1)"
 
-#: src/wmprog.cc:667
+#: src/wmprog.cc:713
 msgid "Icewm_Bg(1)"
 msgstr "Icewm_Bg(1)"
 
-#: src/wmprog.cc:668
+#: src/wmprog.cc:714
 msgid "Ice_Sound(1)"
 msgstr "Ice_Sound(1)"
 
-#: src/wmprog.cc:730
+#: src/wmprog.cc:776
 msgid "Programs"
 msgstr "Programy"
 
-#: src/wmprog.cc:735
+#: src/wmprog.cc:781
 msgid "_Run..."
 msgstr "_Spustiť..."
 
-#: src/wmprog.cc:740 src/wmtaskbar.cc:263
+#: src/wmprog.cc:786 src/wmtaskbar.cc:275
 msgid "_Windows"
 msgstr "_Okná"
 
-#: src/wmprog.cc:759
+#: src/wmprog.cc:805
 msgid "_Help"
 msgstr "_Pomocník"
 
-#: src/wmprog.cc:770
+#: src/wmprog.cc:816
 msgid "_Focus"
 msgstr "_Aktivovať"
 
-#: src/wmprog.cc:775
+#: src/wmprog.cc:821
 msgid "_Preferences"
 msgstr "_Preferencie"
 
-#: src/wmprog.cc:781
+#: src/wmprog.cc:827
 msgid "_Themes"
 msgstr "_Témy"
 
-#: src/wmprog.cc:786
+#: src/wmprog.cc:832
 msgid "Se_ttings"
 msgstr "Nas_tavenia"
 
@@ -1747,59 +1725,59 @@ msgstr "Nas_tavenia"
 msgid "Session Manager: Unknown line %s"
 msgstr "Manažér sedení: Neznámy riadok %s"
 
-#: src/wmtaskbar.cc:153 src/wmtaskbar.cc:154
+#: src/wmtaskbar.cc:165 src/wmtaskbar.cc:166
 msgid "Task Bar"
 msgstr "Panel úloh"
 
-#: src/wmtaskbar.cc:253 src/wmwinlist.cc:305 src/wmwinlist.cc:318
+#: src/wmtaskbar.cc:265 src/wmwinlist.cc:319 src/wmwinlist.cc:332
 msgid "Tile _Vertically"
 msgstr "Zarovnať _vertikálne"
 
-#: src/wmtaskbar.cc:254 src/wmwinlist.cc:306 src/wmwinlist.cc:319
+#: src/wmtaskbar.cc:266 src/wmwinlist.cc:320 src/wmwinlist.cc:333
 msgid "T_ile Horizontally"
 msgstr "Zarovnať _horizontálne"
 
-#: src/wmtaskbar.cc:255 src/wmwinlist.cc:307 src/wmwinlist.cc:320
+#: src/wmtaskbar.cc:267 src/wmwinlist.cc:321 src/wmwinlist.cc:334
 msgid "Ca_scade"
 msgstr "Zarovnať do _kaskády"
 
-#: src/wmtaskbar.cc:256 src/wmwinlist.cc:308 src/wmwinlist.cc:321
+#: src/wmtaskbar.cc:268 src/wmwinlist.cc:322 src/wmwinlist.cc:335
 msgid "_Arrange"
 msgstr "_Usporiadať"
 
-#: src/wmtaskbar.cc:257 src/wmwinlist.cc:310 src/wmwinlist.cc:322
+#: src/wmtaskbar.cc:269 src/wmwinlist.cc:324 src/wmwinlist.cc:336
 msgid "_Minimize All"
 msgstr "_Minimalizovať všetko"
 
-#: src/wmtaskbar.cc:258 src/wmwinlist.cc:311 src/wmwinlist.cc:323
+#: src/wmtaskbar.cc:270 src/wmwinlist.cc:325 src/wmwinlist.cc:337
 msgid "_Hide All"
 msgstr "_Skryť všetko"
 
-#: src/wmtaskbar.cc:259 src/wmwinlist.cc:312 src/wmwinlist.cc:324
+#: src/wmtaskbar.cc:271 src/wmwinlist.cc:326 src/wmwinlist.cc:338
 msgid "_Undo"
 msgstr "_Vrátiť"
 
-#: src/wmtaskbar.cc:261
+#: src/wmtaskbar.cc:273
 msgid "Arrange _Icons"
 msgstr "Usporiadať _Ikony"
 
-#: src/wmtaskbar.cc:265
+#: src/wmtaskbar.cc:277
 msgid "_Refresh"
 msgstr "_Obnoviť"
 
-#: src/wmtaskbar.cc:271
+#: src/wmtaskbar.cc:283
 msgid "_License"
 msgstr "_Licencia"
 
-#: src/wmtaskbar.cc:352
+#: src/wmtaskbar.cc:364
 msgid "Favorite applications"
 msgstr "Obľúbené aplikácie"
 
-#: src/wmtaskbar.cc:370
+#: src/wmtaskbar.cc:382
 msgid "Window list menu"
 msgstr "Menu zoznamu okien"
 
-#: src/wmtaskbar.cc:379
+#: src/wmtaskbar.cc:391
 msgid "Show Desktop"
 msgstr "Ukáž plochu"
 
@@ -1819,27 +1797,27 @@ msgstr "Zdvihnúť/Znížiť"
 msgid "All Workspaces"
 msgstr "Všetky pracovné plochy"
 
-#: src/wmwinlist.cc:290
+#: src/wmwinlist.cc:295
 msgid "Del"
 msgstr "Zmazať"
 
-#: src/wmwinlist.cc:294
+#: src/wmwinlist.cc:299
 msgid "_Terminate Process"
 msgstr "_Ukončiť proces"
 
-#: src/wmwinlist.cc:295
+#: src/wmwinlist.cc:300
 msgid "Kill _Process"
 msgstr "_Zabiť proces"
 
-#: src/wmwinlist.cc:300
+#: src/wmwinlist.cc:309
 msgid "_Show"
 msgstr "Ukáz_ať"
 
-#: src/wmwinlist.cc:302
-msgid "_Minimize"
-msgstr "_Minimalizovať"
+#: src/wmwinlist.cc:312
+msgid "_Raise"
+msgstr "_Zvýšiť"
 
-#: src/wmwinlist.cc:337 src/wmwinlist.cc:338
+#: src/wmwinlist.cc:351 src/wmwinlist.cc:352
 msgid "Window list"
 msgstr "Zoznam okien"
 
@@ -1848,7 +1826,7 @@ msgstr "Zoznam okien"
 msgid "%lu. Workspace %-.32s"
 msgstr "%lu. Pracovná plocha %-.32s"
 
-#: src/yapp.cc:276
+#: src/yapp.cc:277
 #, c-format
 msgid "%s: select failed"
 msgstr "%s: výber zlyhal"
@@ -1858,12 +1836,12 @@ msgstr "%s: výber zlyhal"
 msgid "Unknown key name %s in %s"
 msgstr "Neznáme meno kľúča %s v %s"
 
-#: src/yconfig.cc:150 src/yconfig.cc:163 src/yconfig.cc:176
+#: src/yconfig.cc:150 src/yconfig.cc:163 src/yconfig.cc:177
 #, c-format
-msgid "Bad argument: %s for %s"
-msgstr "Zlá hodnota: %s pre %s"
+msgid "Bad argument: %s for %s [%d,%d]"
+msgstr "Zlá hodnota: %s pre %s [%d,%d]"
 
-#: src/yconfig.cc:212
+#: src/yconfig.cc:214
 #, c-format
 msgid "Bad option: %s"
 msgstr "Zla voľba: %s"
@@ -2011,28 +1989,721 @@ msgstr "Nie je možné nájsť obrázok %s"
 msgid "$USER or $LOGNAME not set?"
 msgstr "$USER ,alebo $LOGNAME nie je nastavený?"
 
-#: src/yurl.cc:146
+#: src/yurl.cc:145
 #, c-format
 msgid "Failed to parse URL \"%s\"."
 msgstr "Zlyhalo analyzovanie URL \"%s\"."
 
-#: src/yurl.cc:162
+#: src/yurl.cc:161
 #, c-format
 msgid "Incomplete hex escape in URL at position %d."
 msgstr "Neúplná hexadecimálna časť URL na pozícii %d."
 
-#: src/yurl.cc:169
+#: src/yurl.cc:168
 #, c-format
 msgid "Invalid hex escape in URL at position %d."
 msgstr "Neplatná hexadecimálna časť URL na pozícii %d."
 
-#: src/yxapp.cc:891
+#: src/yxapp.cc:885
 msgid ""
 "  -d, --display=NAME  NAME of the X server to use.\n"
 "  --sync              Synchronize X11 commands.\n"
 msgstr ""
 "  -d,  --display=NÁZOV  NÁZOV X servera, ktorý sa použije.\n"
 "  --sync               Synchronizuje príkazy X11.\n"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
+#: src/fdospecgen.h:43
+msgid "2DGraphics"
+msgstr "2D Grafika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
+#: src/fdospecgen.h:45
+msgid "3DGraphics"
+msgstr "3D Grafika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings or Utility
+#: src/fdospecgen.h:47 src/fdospecgen.h:49
+msgid "Accessibility"
+msgstr "Dostupnosť"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:51
+msgid "Accessories"
+msgstr "Príslušenstvo"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:53
+msgid "ActionGame"
+msgstr "Akčná hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:55
+msgid "Adult"
+msgstr "Dospelý"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:57
+msgid "AdventureGame"
+msgstr "Dobrodružná hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:59
+msgid "Amusement"
+msgstr "Zábava"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:61
+msgid "ArcadeGame"
+msgstr "Arkádová hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
+#: src/fdospecgen.h:63
+msgid "Archiving"
+msgstr "Archivácia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:65
+msgid "Art"
+msgstr "Umenie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:67
+msgid "ArtificialIntelligence"
+msgstr "Umelá inteligencia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:69
+msgid "Astronomy"
+msgstr "Astronómia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:71
+msgid "Audio"
+msgstr "Audio"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:73
+msgid "AudioVideo"
+msgstr "AudioVideo"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
+#: src/fdospecgen.h:75
+msgid "AudioVideoEditing"
+msgstr "AudioVideo editácia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:77
+msgid "Biology"
+msgstr "Biológia\t"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:79
+msgid "BlocksGame"
+msgstr "Bloková hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:81
+msgid "BoardGame"
+msgstr "Stolná hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
+#: src/fdospecgen.h:83
+msgid "Building"
+msgstr "Zostavovanie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
+#: src/fdospecgen.h:85
+msgid "Calculator"
+msgstr "Kalkulačka"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:87
+msgid "Calendar"
+msgstr "Kalendár"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:89
+msgid "CardGame"
+msgstr "Kartová hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:91
+msgid "Chart"
+msgstr "Graf"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:93
+msgid "Chat"
+msgstr "Chat"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:95
+msgid "Chemistry"
+msgstr "Chémia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
+#: src/fdospecgen.h:97
+msgid "Clock"
+msgstr "Hodiny"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility;Archiving
+#: src/fdospecgen.h:99
+msgid "Compression"
+msgstr "Komprimácia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:101
+msgid "ComputerScience"
+msgstr "Počítačová veda"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:103
+msgid "Construction"
+msgstr "Budovanie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:105
+msgid "ContactManagement"
+msgstr "Správa kontaktov"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:107
+msgid "Core"
+msgstr "Jadro"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:109
+msgid "DataVisualization"
+msgstr "Vizualizácia dát"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Development or AudioVideo
+#: src/fdospecgen.h:111
+msgid "Database"
+msgstr "Databáza"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
+#: src/fdospecgen.h:113
+msgid "Debugger"
+msgstr "Debugger"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
+#: src/fdospecgen.h:115
+msgid "DesktopSettings"
+msgstr "Desktopové nastavenia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:117
+msgid "Development"
+msgstr "Vývoj"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:119
+msgid "Dialup"
+msgstr "Vytáčanie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or TextTools
+#: src/fdospecgen.h:121
+msgid "Dictionary"
+msgstr "Slovník"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo
+#: src/fdospecgen.h:123
+msgid "DiscBurning"
+msgstr "Vypaľovanie disku"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:125
+msgid "Documentation"
+msgstr "Dokumentácia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:127
+msgid "Economy"
+msgstr "Ekonómia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:129
+msgid "Editors"
+msgstr "Editory"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:131
+msgid "Education"
+msgstr "Vzdelávanie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:133
+msgid "Electricity"
+msgstr "Elektrina"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:135
+msgid "Electronics"
+msgstr "Elektronika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Network
+#: src/fdospecgen.h:137
+msgid "Email"
+msgstr "Email"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System or Game
+#: src/fdospecgen.h:139
+msgid "Emulator"
+msgstr "Emulátor"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:141
+msgid "Engineering"
+msgstr "Inžinierstvo"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:143
+msgid "Feed"
+msgstr "Kanál"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System;FileTools
+#: src/fdospecgen.h:145
+msgid "FileManager"
+msgstr "Správca súborov"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility or System
+#: src/fdospecgen.h:147
+msgid "FileTools"
+msgstr "Súborové nástroje"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:149
+msgid "FileTransfer"
+msgstr "Prenos súborov"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
+#: src/fdospecgen.h:151
+msgid "Filesystem"
+msgstr "Súborový systém"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:153
+msgid "Finance"
+msgstr "Financie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:155
+msgid "FlowChart"
+msgstr "Vývojový diagram"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
+#: src/fdospecgen.h:157
+msgid "GUIDesigner"
+msgstr "Dizajnér GUI"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:159
+msgid "Game"
+msgstr "Hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:161
+msgid "Geography"
+msgstr "Zemepis"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:163
+msgid "Geology"
+msgstr "Geológia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:165
+msgid "Geoscience"
+msgstr "Veda o Zemi"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:167
+msgid "Graphics"
+msgstr "Grafika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Audio
+#: src/fdospecgen.h:169
+msgid "HamRadio"
+msgstr "Ham rádio"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
+#: src/fdospecgen.h:171
+msgid "HardwareSettings"
+msgstr "Hardvérové nastavenia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:173
+msgid "History"
+msgstr "Dejiny"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:175
+msgid "Humanities"
+msgstr "Humanitné vedy"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
+#: src/fdospecgen.h:177
+msgid "IDE"
+msgstr "IDE"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:179
+msgid "IRCClient"
+msgstr "Klient IRC"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:181
+msgid "ImageProcessing"
+msgstr "Spracovanie obrazu"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:183
+msgid "InstantMessaging"
+msgstr "Okamžité správy"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:185
+msgid "KidsGame"
+msgstr "Detská hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:187
+msgid "Languages"
+msgstr "Jazyky"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:189
+msgid "Literature"
+msgstr "Literatúra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:191
+msgid "LogicGame"
+msgstr "Logická hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science or Utility
+#: src/fdospecgen.h:193
+msgid "Maps"
+msgstr "Mapy"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:195
+msgid "Math"
+msgstr "Matematika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:197
+msgid "MedicalSoftware"
+msgstr "Zdravotnícky softvér"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
+#: src/fdospecgen.h:199
+msgid "Midi"
+msgstr "Midi"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
+#: src/fdospecgen.h:201
+msgid "Mixer"
+msgstr "Zmiešavač"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System or Network
+#: src/fdospecgen.h:203
+msgid "Monitor"
+msgstr "Monitor"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:205
+msgid "Motif"
+msgstr "Motív"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:207
+msgid "Multimedia"
+msgstr "Multimédiá"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo or Education
+#: src/fdospecgen.h:209
+msgid "Music"
+msgstr "Hudba"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:211
+msgid "Network"
+msgstr "Sieť"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:213
+msgid "News"
+msgstr "Správy"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;Math or Science;Math
+#: src/fdospecgen.h:215
+msgid "NumericalAnalysis"
+msgstr "Numerická analýza"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;Scanning
+#: src/fdospecgen.h:217
+msgid "OCR"
+msgstr "OCR"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:219
+msgid "Office"
+msgstr "Kancelária"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:221
+msgid "Other"
+msgstr "Iné"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:223
+msgid "P2P"
+msgstr "P2P"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:225
+msgid "PDA"
+msgstr "PDA"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings
+#: src/fdospecgen.h:227
+msgid "PackageManager"
+msgstr "Správca balíkov"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education;ComputerScience or Science;ComputerScience
+#: src/fdospecgen.h:229
+msgid "ParallelComputing"
+msgstr "Paralelné výpočty"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
+#: src/fdospecgen.h:231
+msgid "Photography"
+msgstr "Fotografovanie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:233
+msgid "Physics"
+msgstr "Fyzika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
+#: src/fdospecgen.h:235
+msgid "Player"
+msgstr "Prehrávač"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:237
+msgid "Presentation"
+msgstr "Prezentácia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings;HardwareSettings
+#: src/fdospecgen.h:239
+msgid "Printing"
+msgstr "Tlač"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
+#: src/fdospecgen.h:241
+msgid "Profiling"
+msgstr "Profilovanie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office or Development
+#: src/fdospecgen.h:243
+msgid "ProjectManagement"
+msgstr "Projektový manažment"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
+#: src/fdospecgen.h:245
+msgid "Publishing"
+msgstr "Publikovanie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
+#: src/fdospecgen.h:247
+msgid "RasterGraphics"
+msgstr "Rastrová grafika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Audio or Video or AudioVideo
+#: src/fdospecgen.h:249
+msgid "Recorder"
+msgstr "Rekordér"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:251
+msgid "RemoteAccess"
+msgstr "Vzdialený prístup"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
+#: src/fdospecgen.h:253
+msgid "RevisionControl"
+msgstr "Riadenie revízií"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:255
+msgid "Robotics"
+msgstr "Robotika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:257
+msgid "RolePlaying"
+msgstr "Hranie rolí"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics
+#: src/fdospecgen.h:259
+msgid "Scanning"
+msgstr "Skenovanie"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:261
+msgid "Science"
+msgstr "Veda"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:263
+msgid "Screensavers"
+msgstr "Šetriče obrazovky"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Settings or System
+#: src/fdospecgen.h:265
+msgid "Security"
+msgstr "Bezpečnosť"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
+#: src/fdospecgen.h:267
+msgid "Sequencer"
+msgstr "Sekvencer"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:269
+msgid "Settings"
+msgstr "Nastavenia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:271
+msgid "Shooter"
+msgstr "Strelec"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:273
+msgid "Simulation"
+msgstr "Simulácia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science or Utility
+#: src/fdospecgen.h:275
+msgid "Spirituality"
+msgstr "Duchovno"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Education or Science
+#: src/fdospecgen.h:277
+msgid "Sports"
+msgstr "Športy"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:279
+msgid "SportsGame"
+msgstr "Športová hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:281
+msgid "Spreadsheet"
+msgstr "\tTabuľkový procesor"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Game
+#: src/fdospecgen.h:283
+msgid "StrategyGame"
+msgstr "Strategická hra"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:285
+msgid "System"
+msgstr "Systém"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Video
+#: src/fdospecgen.h:287
+msgid "TV"
+msgstr "TV"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:289
+msgid "Telephony"
+msgstr "Telefónia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
+#: src/fdospecgen.h:291
+msgid "TelephonyTools"
+msgstr "Telefónne nástroje"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: System
+#: src/fdospecgen.h:293
+msgid "TerminalEmulator"
+msgstr "Emulátor terminálu"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
+#: src/fdospecgen.h:295
+msgid "TextEditor"
+msgstr "Textový editor"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Utility
+#: src/fdospecgen.h:297
+msgid "TextTools"
+msgstr "Textové nástroje"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Development
+#: src/fdospecgen.h:299
+msgid "Translation"
+msgstr "Preklad"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: AudioVideo;Audio
+#: src/fdospecgen.h:301
+msgid "Tuner"
+msgstr "Tuner"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:303
+msgid "Utility"
+msgstr "Nástroj"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics;2DGraphics
+#: src/fdospecgen.h:305
+msgid "VectorGraphics"
+msgstr "Vektorová grafika"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:307
+msgid "Video"
+msgstr "Video"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:309
+msgid "VideoConference"
+msgstr "Videokonferencia"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Graphics or Office
+#: src/fdospecgen.h:311
+msgid "Viewer"
+msgstr "Prehliadač"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes.
+#: src/fdospecgen.h:313
+msgid "WINE"
+msgstr "WINE"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network
+#: src/fdospecgen.h:315
+msgid "WebBrowser"
+msgstr "Webový prehliadač"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Network or Development
+#: src/fdospecgen.h:317
+msgid "WebDevelopment"
+msgstr "Vývoj webu"
+
+#. TRANSLATORS: This is a menu category name from freedesktop.org. Please add spaces as needed but no double-quotes. Context: Office
+#: src/fdospecgen.h:319
+msgid "WordProcessor"
+msgstr "Textový procesor"
+
+#~ msgid "_Minimize"
+#~ msgstr "_Minimalizovať"
 
 #~ msgid "Missing command argument"
 #~ msgstr "Chýba hodnota príkazu"
@@ -2185,9 +2856,6 @@ msgstr ""
 
 #~ msgid "Invalid path: "
 #~ msgstr "Neplatná cesta: "
-
-#~ msgid "Cancel"
-#~ msgstr "Zrušiť"
 
 #~ msgid ""
 #~ "Interface %s:\n"

@@ -22,6 +22,7 @@
 #include "yrect.h"
 #include "wpixmaps.h"
 #include "aworkspaces.h"
+#include "yxcontext.h"
 
 #include "intl.h"
 
@@ -30,10 +31,6 @@ static YColorName inactiveBorderBg(&clrInactiveBorder);
 
 lazy<YTimer> YFrameWindow::fAutoRaiseTimer;
 lazy<YTimer> YFrameWindow::fDelayFocusTimer;
-
-extern XContext windowContext;
-extern XContext frameContext;
-extern XContext clientContext;
 
 YFrameWindow::YFrameWindow(
     YActionListener *wmActionListener,
@@ -184,10 +181,10 @@ YFrameWindow::~YFrameWindow() {
     if (fClient != 0) {
         if (!fClient->destroyed() && fClient->adopted())
             XRemoveFromSaveSet(xapp->display(), client()->handle());
-        XDeleteContext(xapp->display(), client()->handle(), frameContext);
+        frameContext.remove(client()->handle());
     }
     if (fUserTimeWindow != None) {
-        XDeleteContext(xapp->display(), fUserTimeWindow, windowContext);
+        windowContext.remove(fUserTimeWindow);
     }
 
     if (affectsWorkArea())
@@ -576,6 +573,15 @@ void YFrameWindow::unmanage(bool reparent) {
         else if (gy > 0)
             posY += borderYN() + titleYN() - 2 * client()->getBorder();
 
+        if (gx == 0 && gy == 0) {
+            const XSizeHints* sh = client()->sizeHints();
+            if (sh && (sh->flags & PWinGravity) &&
+                sh->win_gravity == StaticGravity)
+            {
+                posY += titleYN();
+            }
+        }
+
         if (reparent)
             client()->reparent(manager, posX, posY);
 
@@ -686,17 +692,13 @@ void YFrameWindow::configureClient(const XConfigureRequestEvent &configureReques
     configureClient(cx, cy, cw, ch);
 
     if (configureRequest.value_mask & CWStackMode) {
-        union {
+        struct {
             YFrameWindow *ptr;
-            XPointer xptr;
         } sibling = { 0 };
         XWindowChanges xwc;
 
         if ((configureRequest.value_mask & CWSibling) &&
-            XFindContext(xapp->display(),
-                         configureRequest.above,
-                         clientContext,
-                         &(sibling.xptr)) == 0)
+            frameContext.find(configureRequest.above, &sibling.ptr))
             xwc.sibling = sibling.ptr->handle();
         else
             xwc.sibling = configureRequest.above;
@@ -740,6 +742,7 @@ void YFrameWindow::configureClient(const XConfigureRequestEvent &configureReques
                         (clickFocus || !strongPointerFocus))
                     {
                         if (focusChangesWorkspace ||
+                            focusCurrentWorkspace ||
                             visibleOn(manager->activeWorkspace()))
                         {
                             activate();
@@ -1077,6 +1080,9 @@ void YFrameWindow::actionPerformed(YAction action, unsigned int modifiers) {
     } else if (action == actionMaximizeVert) {
         if (canMaximize())
             wmMaximizeVert();
+    } else if (action == actionMaximizeHoriz) {
+        if (canMaximize())
+            wmMaximizeHorz();
     } else if (action == actionLower) {
         if (canLower())
             wmLower();
@@ -1193,6 +1199,12 @@ void YFrameWindow::wmSize() {
     startMoveSize(false, false,
                   0, 0,
                   0, 0);
+}
+
+bool YFrameWindow::canRestore() const {
+    return hasbit(fWinState,
+            WinStateMaximizedVert | WinStateMaximizedHoriz |
+            WinStateMinimized | WinStateHidden | WinStateRollup);
 }
 
 void YFrameWindow::wmRestore() {
@@ -1506,7 +1518,7 @@ void YFrameWindow::updateFocusOnMap(bool& doActivate) {
     if (frameOptions() & foNoFocusOnMap)
         doActivate = false;
 
-    if (!onCurrentWorkspace && !focusChangesWorkspace)
+    if (!onCurrentWorkspace && !focusChangesWorkspace && !focusCurrentWorkspace)
         doActivate = false;
 
     if (owner() != 0) {
@@ -1589,21 +1601,25 @@ void YFrameWindow::focus(bool canWarp) {
 #endif
 }
 
-void YFrameWindow::activate(bool canWarp) {
+void YFrameWindow::activate(bool canWarp, bool curWork) {
     manager->lockFocus();
     if (fWinState & (WinStateHidden | WinStateMinimized))
         setState(WinStateHidden | WinStateMinimized, 0);
-    if (!visibleOn(manager->activeWorkspace()))
-        manager->activateWorkspace(getWorkspace());
+    if (!visibleOn(manager->activeWorkspace())) {
+        if (focusCurrentWorkspace && curWork)
+            setWorkspace(manager->activeWorkspace());
+        else
+            manager->activateWorkspace(getWorkspace());
+    }
 
     manager->unlockFocus();
     focus(canWarp);
 }
 
-void YFrameWindow::activateWindow(bool raise) {
+void YFrameWindow::activateWindow(bool raise, bool curWork) {
     if (raise)
         wmRaise();
-    activate(true);
+    activate(true, curWork);
 }
 
 MiniIcon *YFrameWindow::getMiniIcon() {
@@ -2003,6 +2019,9 @@ void YFrameWindow::getFrameHints() {
     case wtUtility:
         break;
     }
+
+    if (client()->shaped())
+        fFrameDecors &= ~(fdTitleBar | fdBorder);
 
     WindowOption wo(null);
     getWindowOptions(wo, false);
@@ -3193,15 +3212,6 @@ void YFrameWindow::updateTaskBar() {
             if (fTaskBarApp->getShown()) ///!!! optimize
                 fTaskBarApp->repaint();
         }
-#if false
-        /// !!! optimize
-        if (fTaskBarApp) {
-            bool shown = fTaskBarApp->getShown();
-            if (shown != fTaskBarApp->getShown())
-                if (taskBar && taskBar->taskPane())
-                    taskBar->taskPane()->relayout();
-        }
-#endif
        if (taskBar)
            taskBar->relayoutTasks();
     }
@@ -3281,13 +3291,11 @@ void YFrameWindow::updateNetWMUserTimeWindow() {
     Window window = fUserTimeWindow;
     if (client()->getNetWMUserTimeWindow(window) && window != fUserTimeWindow) {
         if (fUserTimeWindow != None) {
-            XDeleteContext(xapp->display(), fUserTimeWindow,
-                    windowContext);
+            windowContext.remove(fUserTimeWindow);
         }
         fUserTimeWindow = window;
         if (window != None) {
-            XSaveContext(xapp->display(), window,
-                    windowContext, (XPointer)client());
+            windowContext.save(window, client());
             XWindowAttributes wa;
             if (XGetWindowAttributes(xapp->display(), window, &wa))
                 XSelectInput(xapp->display(), window,
